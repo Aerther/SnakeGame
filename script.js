@@ -1,8 +1,7 @@
 const container = document.getElementById("container");
 
 const GRID_SIZE = 50;
-let speed = 500;
-let originalSpeed = speed;
+let speed = 400;
 let fleft = GRID_SIZE * 2;
 let movement = GRID_SIZE;
 let ftop = Math.floor(container.offsetHeight / 2 / movement) * movement;
@@ -13,10 +12,14 @@ container.style.backgroundSize = `${GRID_SIZE}px ${GRID_SIZE}px`;
 let blocksPositions = [];
 let applesPositions = [];
 let sandsPositions = [];
+let watersPositions = [];
 
-addApples(10);
-addSands(40);
 positionBlocks(3);
+addBlock(20, "sand", sandsPositions, false, false, false);
+addBlock(20, "water", watersPositions, false, false, false);
+addBlock(20, "apple", applesPositions, true, false, false);
+
+console.log(applesPositions.length, sandsPositions.length, watersPositions.length);
 
 let gameInterval;
 
@@ -35,66 +38,47 @@ document.addEventListener("keydown", (e) => {
         side = "left";
     } else if (e.key == " ") {
         speed = speed / 2;
-        updateSpeed();
+        updateSpeed(speed);
+    } else if (e.key == "x") {
+        speed = speed * 2;
+        updateSpeed(speed);
     }
 });
 
-function updateSpeed(change = true) {
-    Array.from(container.getElementsByClassName("block")).forEach((element) => {
-        element.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
+function updateSpeed(newSpeed) {
+    Array.from(container.getElementsByClassName("body-part")).forEach((element) => {
+        element.style.transition = `top ${newSpeed}ms linear, left ${newSpeed}ms linear`;
     });
 
     clearInterval(gameInterval);
-    gameInterval = setInterval(moveSnake, speed);
-
-    if(change) {
-        originalSpeed = speed
-    }
+    gameInterval = setInterval(moveSnake, newSpeed);
 }
 
-function addApples(number) {
-    for (let i = 0; i < number; i++) {
-        let isOnSnake, width, height;
+function addBlock(quant, type, list, validSand, validWater, validApple) {
+    for (let i = 0; i < quant; i++) {
+        let isOnSnake, isOnSand, isOnWater, isOnApple, x, y;
     
         do {
-            width = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
-            height = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
-            isOnSnake = blocksPositions.some(pos => pos[0] === height && pos[1] === width);
-        } while (isOnSnake);
+            x = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
+            y = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
+
+            isOnSnake = blocksPositions.some(pos => pos[1] == y && pos[0] == x);
+
+            isOnSand = validSand ? sandsPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+            isOnWater = validWater ? watersPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+            isOnApple = validApple ? applesPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+        } while (isOnSnake || isOnSand || isOnWater || isOnApple);
     
         let b = createBlock();
-        b.classList.add("apple");
+        b.classList.add(type);
     
         b.style.width = GRID_SIZE + "px";
-        b.style.top = height + "px";
-        b.style.left = width + "px";
+        b.style.top = y + "px";
+        b.style.left = x + "px";
     
         container.appendChild(b);
     
-        applesPositions.push([width, height]);
-    }
-}
-
-function addSands(number) {
-    for (let i = 0; i < number; i++) {
-        let isOnSnake, width, height;
-
-        do {
-            width = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
-            height = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
-            isOnSnake = blocksPositions.some(pos => pos[0] === height && pos[1] === width);
-        } while (isOnSnake);
-
-        let b = createBlock();
-        b.classList.add("sand");
-
-        b.style.width = GRID_SIZE + "px";
-        b.style.top = height + "px";
-        b.style.left = width + "px";
-
-        container.appendChild(b);
-
-        sandsPositions.push([width, height]);
+        list.push([x, y]);
     }
 }
 
@@ -105,7 +89,7 @@ function positionBlocks(number) {
 
     blocksPositions.forEach((position) => {
         let b = createBlock();
-        b.classList.add("block");
+        b.classList.add("body-part");
 
         b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
         b.style.width = GRID_SIZE + "px";
@@ -136,22 +120,18 @@ function moveSnake() {
     if (ftop >= container.offsetHeight) ftop = container.offsetHeight - movement;
     if (fleft >= container.offsetWidth) fleft = container.offsetWidth - movement;
 
-    let onSand = false;
-    if(sandsPositions.some(pos => pos[0] == fleft && pos[1] == ftop) && !onSand) {
-        originalSpeed = speed;
-        speed = speed * 10;
-        updateSpeed(false);
-        onSand = true;
+    if(sandsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
+        updateSpeed(speed * 3);
+    } else if(watersPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
+        location.reload();
     } else {
-        speed = originalSpeed;
-        updateSpeed();
-        onSand = false;
+        updateSpeed(speed);
     }
 
     blocksPositions.unshift([ftop, fleft]);
     blocksPositions.pop();
 
-    const list = Array.from(container.getElementsByClassName("block"));
+    const list = Array.from(container.getElementsByClassName("body-part"));
     blocksPositions.forEach((position, index) => {
         if (blocksPositions[0][0] == position[0] && blocksPositions[0][1] == position[1] && index != 0) {
             //alert("Game Over! The snake collided with itself.");
@@ -177,7 +157,7 @@ function moveSnake() {
 
                 const tailPosition = blocksPositions[blocksPositions.length - 1];
                 let b = document.createElement("div");
-                b.classList.add("block");
+                b.classList.add("body-part");
 
                 b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
                 b.style.width = GRID_SIZE + "px";

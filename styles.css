@@ -20,12 +20,12 @@ body {
     background-image: linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);
 }
 
-.block {
+.body-part {
     aspect-ratio: 1/1;
     position: absolute;
 
     background-color: red;
-    transition: top 400ms linear, left 400ms linear;
+    z-index: 3;
 }
 
 .apple {
@@ -34,10 +34,19 @@ body {
 
     position: absolute;
     aspect-ratio: 1/1;
+    z-index: 2;
 }
 
 .sand {
     background-color: yellow;
     aspect-ratio: 1/1;
     position: absolute;
+    z-index: 1;
+}
+
+.water {
+    background-color: blue;
+    aspect-ratio: 1/1;
+    position: absolute;
+    z-index: 0;
 }
