@@ -54,7 +54,7 @@ function updateSpeed(newSpeed) {
     gameInterval = setInterval(moveSnake, newSpeed);
 }
 
-function addBlock(quant, type, list, validSand, validWater, validApple) {
+function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
     for (let i = 0; i < quant; i++) {
         let isOnSnake, isOnSand, isOnWater, isOnApple, x, y;
     
@@ -62,12 +62,16 @@ function addBlock(quant, type, list, validSand, validWater, validApple) {
             x = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
             y = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
 
+            console.log(blocksPositions)
             isOnSnake = blocksPositions.some(pos => pos[1] == y && pos[0] == x);
 
-            isOnSand = validSand ? sandsPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-            isOnWater = validWater ? watersPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-            isOnApple = validApple ? applesPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-        } while (isOnSnake || isOnSand || isOnWater || isOnApple);
+            isOnSand = sandsPositions.some(pos => pos[1] == y && pos[0] == x);
+            isOnWater = watersPositions.some(pos => pos[1] == y && pos[0] == x);
+            isOnApple = applesPositions.some(pos => pos[1] == y && pos[0] == x);
+        } while (isOnSnake || 
+            (avoidSand && isOnSand) || 
+            (avoidWater && isOnWater) || 
+            (avoidApple && isOnApple));
     
         let b = createBlock();
         b.classList.add(type);
@@ -84,7 +88,7 @@ function addBlock(quant, type, list, validSand, validWater, validApple) {
 
 function positionBlocks(number) {
     for (let i = 0; i < number; i++) {
-        blocksPositions.push([ftop, fleft - i * movement]);
+        blocksPositions.push([fleft - i * movement, ftop]);
     }
 
     blocksPositions.forEach((position) => {
@@ -93,8 +97,8 @@ function positionBlocks(number) {
 
         b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
         b.style.width = GRID_SIZE + "px";
-        b.style.top = position[0] + "px";
-        b.style.left = position[1] + "px";
+        b.style.top = position[1] + "px";
+        b.style.left = position[0] + "px";
 
         container.appendChild(b);
     });
@@ -128,7 +132,7 @@ function moveSnake() {
         updateSpeed(speed);
     }
 
-    blocksPositions.unshift([ftop, fleft]);
+    blocksPositions.unshift([fleft, ftop]);
     blocksPositions.pop();
 
     const list = Array.from(container.getElementsByClassName("body-part"));
@@ -138,12 +142,12 @@ function moveSnake() {
             location.reload();
         }
 
-        list[index].style.top = position[0] + "px";
-        list[index].style.left = position[1] + "px";
+        list[index].style.top = position[1] + "px";
+        list[index].style.left = position[0] + "px";
     });
 
     applesPositions.forEach((applePosition, index) => {
-        if (applePosition[0] == fleft && applePosition[1] == ftop) {
+        if (applePosition[0] === fleft && applePosition[1] === ftop) {
             const appleElement = Array.from(container.getElementsByClassName("apple")).find(
                 (apple) => parseInt(apple.style.left) === applePosition[0] && parseInt(apple.style.top) === applePosition[1]
             );
@@ -153,7 +157,7 @@ function moveSnake() {
 
                 applesPositions.splice(index, 1);
 
-                addApples(1);
+                addBlock(1, "apple", applesPositions, true, false, false);
 
                 const tailPosition = blocksPositions[blocksPositions.length - 1];
                 let b = document.createElement("div");
@@ -161,8 +165,8 @@ function moveSnake() {
 
                 b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
                 b.style.width = GRID_SIZE + "px";
-                b.style.top = tailPosition[0] + "px";
-                b.style.left = tailPosition[1] + "px";
+                b.style.top = tailPosition[1] + "px";
+                b.style.left = tailPosition[0] + "px";
 
                 container.appendChild(b);
 
