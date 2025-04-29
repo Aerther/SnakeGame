@@ -1,24 +1,68 @@
 const container = document.getElementById("container");
 
-const GRID_SIZE = 50;
+const BLOCK_SIZE = 50;
 let speed = 300;
-let fleft = GRID_SIZE * 2;
-let movement = GRID_SIZE;
-let ftop = Math.floor(container.offsetHeight / 2 / movement) * movement;
+let fleft = BLOCK_SIZE * 2;
+let ftop = Math.floor(container.offsetHeight / 2 / BLOCK_SIZE) * BLOCK_SIZE;
 let side = "right";
-const totalBlocks = (container.offsetHeight / GRID_SIZE) * (container.offsetWidth / GRID_SIZE);
+const totalBlocks = (container.offsetHeight / BLOCK_SIZE) * (container.offsetWidth / BLOCK_SIZE);
 
-container.style.backgroundSize = `${GRID_SIZE}px ${GRID_SIZE}px`;
+container.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
+
+stage1 = ["ng ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng",
+          "ng ng ng ng ng ng ng ng as ng ng ng ng ng ng ng ng ng",
+          "ng ng ng ng ng ng ng as ns ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng nw ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ns ns ag ng ng ag ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ns as ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
+          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng"];
+
+stage1Body = [[9*BLOCK_SIZE, 8*BLOCK_SIZE], [9*BLOCK_SIZE, 9*BLOCK_SIZE]];
 
 let blocksPositions = [];
 let applesPositions = [];
 let sandsPositions = [];
 let watersPositions = [];
 
-positionBlocks(3);
-addBlock(0, "sand", sandsPositions, true, false, false);
-addBlock(0, "water", watersPositions, true, true, false);
-addBlock(20, "apple", applesPositions, false, true, true);
+//positionBlocks(3);
+//addBlock(0, "sand", sandsPositions, true, false, false);
+//addBlock(0, "water", watersPositions, true, true, false);
+//addBlock(20, "apple", applesPositions, false, true, true);
+
+makeGame(stage1, stage1Body, "up");
+function makeGame(stage, body, direction) {
+    blocksPositions = body;
+    fleft = stage1Body[0][0];
+    ftop = stage1Body[0][1];
+    side = direction;
+
+    addBodyParts(blocksPositions);
+
+    stage = stage.map(row => row.split(" "));
+
+    for(let y=0; y < stage.length; y++) {
+        for(let x=0; x < stage[y].length; x++) {
+            let block = stage[y][x];
+
+            if(block[0] == "a") {
+                addOneBlock("apple", applesPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            }
+
+            if(block[1] == "g") {
+                addOneBlock("grass", null, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            } else if(block[1] == "w") {
+                addOneBlock("water", watersPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            } else if(block[1] == "s") {
+                addOneBlock("sand", sandsPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            }
+        }
+    }
+};
 
 let gameInterval;
 
@@ -57,6 +101,35 @@ function blocksLeft() {
     return totalBlocks - sandsPositions.length - watersPositions.length - blocksPositions.length - applesPositions.length;
 }
 
+function addBodyParts(list) {
+    list.forEach((position) => {
+        let b = createBlock();
+        b.classList.add("body-part");
+
+        b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
+        b.style.width = BLOCK_SIZE + "px";
+        b.style.top = position[1] + "px";
+        b.style.left = position[0] + "px";
+
+        container.appendChild(b);
+    });
+};
+
+function addOneBlock(type, list, x, y) {
+    let b = createBlock();
+    b.classList.add(type);
+    
+    b.style.width = BLOCK_SIZE + "px";
+    b.style.top = y + "px";
+    b.style.left = x + "px";
+    
+    container.appendChild(b);
+    
+    try {
+        list.push([x, y]);
+    } catch(e) {};
+};
+
 function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
     if(quant > blocksLeft()) quant = blocksLeft();
 
@@ -64,8 +137,8 @@ function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
         let isOnSnake, isOnSand, isOnWater, isOnApple, x, y;
     
         do {
-            x = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
-            y = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
+            x = Math.floor(Math.random() * (container.offsetWidth / BLOCK_SIZE)) * BLOCK_SIZE;
+            y = Math.floor(Math.random() * (container.offsetHeight / BLOCK_SIZE)) * BLOCK_SIZE;
 
             isOnSnake = blocksPositions.some(pos => pos[1] == y && pos[0] == x);
 
@@ -77,7 +150,7 @@ function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
         let b = createBlock();
         b.classList.add(type);
     
-        b.style.width = GRID_SIZE + "px";
+        b.style.width = BLOCK_SIZE + "px";
         b.style.top = y + "px";
         b.style.left = x + "px";
     
@@ -89,7 +162,7 @@ function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
 
 function positionBlocks(number) {
     for (let i = 0; i < number; i++) {
-        blocksPositions.push([fleft - i * movement, ftop]);
+        blocksPositions.push([fleft - i * BLOCK_SIZE, ftop]);
     };
 
     blocksPositions.forEach((position) => {
@@ -97,7 +170,7 @@ function positionBlocks(number) {
         b.classList.add("body-part");
 
         b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
-        b.style.width = GRID_SIZE + "px";
+        b.style.width = BLOCK_SIZE + "px";
         b.style.top = position[1] + "px";
         b.style.left = position[0] + "px";
 
@@ -111,19 +184,18 @@ function createBlock() {
 
 function moveSnake() {
     if (side == "down") {
-        ftop += movement;
+        ftop += BLOCK_SIZE;
     } else if (side == "up") {
-        ftop -= movement;
+        ftop -= BLOCK_SIZE;
     } else if (side == "right") {
-        fleft += movement;
+        fleft += BLOCK_SIZE;
     } else if (side == "left") {
-        fleft -= movement;
+        fleft -= BLOCK_SIZE;
     };
 
-    if (ftop < 0) ftop = 0;
-    if (fleft < 0) fleft = 0;
-    if (ftop >= container.offsetHeight) ftop = container.offsetHeight - movement;
-    if (fleft >= container.offsetWidth) fleft = container.offsetWidth - movement;
+    if((ftop < 0 || ftop > container.offsetHeight - BLOCK_SIZE) || (fleft < 0 || fleft > container.offsetWidth - BLOCK_SIZE)) {
+        location.reload();
+    }
 
     if(sandsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
         updateSpeed(speed * 3);
@@ -134,7 +206,10 @@ function moveSnake() {
     };
 
     blocksPositions.unshift([fleft, ftop]);
-    blocksPositions.pop();
+    
+    if(blocksPositions.length != 1) {
+        blocksPositions.pop();
+    } 
 
     const list = Array.from(container.getElementsByClassName("body-part"));
     blocksPositions.forEach((position, index) => {
@@ -165,7 +240,7 @@ function moveSnake() {
                 b.classList.add("body-part");
 
                 b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
-                b.style.width = GRID_SIZE + "px";
+                b.style.width = BLOCK_SIZE + "px";
                 b.style.top = tailPosition[1] + "px";
                 b.style.left = tailPosition[0] + "px";
 

@@ -1,6 +1,7 @@
 * {
     padding: 0;
     margin: 0;
+    box-sizing: border-box;
 }
 
 body {
@@ -38,13 +39,15 @@ body {
     position: absolute;
     aspect-ratio: 1/1;
     z-index: 2;
+
+    animation: rotate 2s linear infinite;
 }
 
 .sand {
     background-color: yellow;
     aspect-ratio: 1/1;
     position: absolute;
-    z-index: 1;
+    z-index: 0;
 }
 
 .water {
@@ -52,4 +55,23 @@ body {
     aspect-ratio: 1/1;
     position: absolute;
     z-index: 0;
+}
+
+.grass {
+    background-color: greenyellow;
+    aspect-ratio: 1/1;
+    position: absolute;
+    z-index: 0;
+
+    border-right: 1px solid black;
+    border-bottom: 1px solid black;
+    background-image: linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, black 1px, transparent 1px);
+}
+
+@keyframes rotate {
+    from {
+        transform: rotate(0deg);
+    } to {
+        transform: rotate(360deg);
+    }
 }
