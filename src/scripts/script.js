@@ -9,18 +9,18 @@ const totalBlocks = (container.offsetHeight / BLOCK_SIZE) * (container.offsetWid
 
 container.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
-stage1 = ["ng ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng",
-          "ng ng ng ng ng ng ng ng as ng ng ng ng ng ng ng ng ng",
-          "ng ng ng ng ng ng ng as ns ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng nw ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ns ns ag ng ng ag ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ns as ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
-          "ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng"];
+stage1 = ["as ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng",
+          "as ng ng ng ng ng ng ng as ng ng ng ng ng ng ng ng ng",
+          "as ng ng ng ng ng ng as ns ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ng nw ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ag ng np ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ns np ns ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ns np ag ng ng ag ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ns ap ag ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng sg np ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ng ag ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
+          "as ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng"];
 
 stage1Body = [[9*BLOCK_SIZE, 8*BLOCK_SIZE], [9*BLOCK_SIZE, 9*BLOCK_SIZE]];
 
@@ -28,6 +28,8 @@ let blocksPositions = [];
 let applesPositions = [];
 let sandsPositions = [];
 let watersPositions = [];
+let wallsPositions = [];
+let addSpeedPositions = [];
 
 //positionBlocks(3);
 //addBlock(0, "sand", sandsPositions, true, false, false);
@@ -51,6 +53,8 @@ function makeGame(stage, body, direction) {
 
             if(block[0] == "a") {
                 addOneBlock("apple", applesPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            } else if(block[0] == "s") {
+                addOneBlock("add-speed", addSpeedPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
             }
 
             if(block[1] == "g") {
@@ -59,7 +63,9 @@ function makeGame(stage, body, direction) {
                 addOneBlock("water", watersPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
             } else if(block[1] == "s") {
                 addOneBlock("sand", sandsPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
-            }
+            } else if(block[1] == "p") {
+                addOneBlock("wall", wallsPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+            } 
         }
     }
 };
@@ -71,13 +77,13 @@ document.addEventListener("keydown", () => {
 }, {once: true});
 
 document.addEventListener("keydown", (e) => {
-    if (e.key == "ArrowDown" && side != "up") {
+    if ((e.key == "ArrowDown" || e.key == "s") && side != "up") {
         side = "down";
-    } else if (e.key == "ArrowUp" && side != "down") {
+    } else if ((e.key == "ArrowUp" || e.key == "w") && side != "down") {
         side = "up";
-    } else if (e.key == "ArrowRight" && side != "left") {
+    } else if ((e.key == "ArrowRight" || e.key == "d") && side != "left") {
         side = "right";
-    } else if (e.key == "ArrowLeft" && side != "right") {
+    } else if ((e.key == "ArrowLeft" || e.key == "a") && side != "right") {
         side = "left";
     } else if (e.key == " ") {
         speed = speed / 2;
@@ -102,7 +108,7 @@ function blocksLeft() {
 }
 
 function addBodyParts(list) {
-    list.forEach((position) => {
+    list.forEach((position, index) => {
         let b = createBlock();
         b.classList.add("body-part");
 
@@ -111,6 +117,9 @@ function addBodyParts(list) {
         b.style.top = position[1] + "px";
         b.style.left = position[0] + "px";
 
+        if(index == 0) {
+            b.classList.add("head");
+        }
         container.appendChild(b);
     });
 };
@@ -199,7 +208,16 @@ function moveSnake() {
 
     if(sandsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
         updateSpeed(speed * 3);
-    } else if(watersPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
+    } else if(addSpeedPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
+        speed = speed / 3;
+        updateSpeed(speed)
+
+        let speedElement = Array.from(container.getElementsByClassName("add-speed")).find(
+            (apple) => parseInt(apple.style.left) === fleft && parseInt(apple.style.top) === ftop
+        );
+
+        container.removeChild(speedElement);
+    } else if(watersPositions.some(pos => pos[0] == fleft && pos[1] == ftop) || wallsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
         location.reload();
     } else {
         updateSpeed(speed);

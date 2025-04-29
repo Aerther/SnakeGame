@@ -32,6 +32,10 @@ body {
     border: 1px solid;
 }
 
+.head {
+    background-color: black;
+}
+
 .apple {
     background-image: url("/src/images/apple.png");
     background-size: cover;
@@ -66,6 +70,22 @@ body {
     border-right: 1px solid black;
     border-bottom: 1px solid black;
     background-image: linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, black 1px, transparent 1px);
+}
+
+.wall {
+    background-color: gray;
+    aspect-ratio: 1/1;
+    position: absolute;
+
+    z-index: 0;
+}
+
+.add-speed {
+    background-color: green;
+    aspect-ratio: 1/1;
+    position: absolute;
+
+    z-index: 1;
 }
 
 @keyframes rotate {
