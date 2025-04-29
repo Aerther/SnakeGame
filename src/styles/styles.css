@@ -17,6 +17,8 @@ body {
     width: 900px;
     position: relative;
 
+    border-right: 1px solid #ccc;
+    border-bottom: 1px solid #ccc;
     background-image: linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);
 }
 
@@ -25,11 +27,12 @@ body {
     position: absolute;
 
     background-color: red;
-    z-index: -1;
+    z-index: 3;
+    border: 1px solid;
 }
 
 .apple {
-    background-image: url("apple.png");
+    background-image: url("/src/images/apple.png");
     background-size: cover;
 
     position: absolute;

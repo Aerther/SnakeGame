@@ -1,11 +1,12 @@
 const container = document.getElementById("container");
 
 const GRID_SIZE = 50;
-let speed = 400;
+let speed = 300;
 let fleft = GRID_SIZE * 2;
 let movement = GRID_SIZE;
 let ftop = Math.floor(container.offsetHeight / 2 / movement) * movement;
 let side = "right";
+const totalBlocks = (container.offsetHeight / GRID_SIZE) * (container.offsetWidth / GRID_SIZE);
 
 container.style.backgroundSize = `${GRID_SIZE}px ${GRID_SIZE}px`;
 
@@ -15,11 +16,9 @@ let sandsPositions = [];
 let watersPositions = [];
 
 positionBlocks(3);
-addBlock(20, "sand", sandsPositions, false, false, false);
-addBlock(20, "water", watersPositions, false, false, false);
-addBlock(20, "apple", applesPositions, true, false, false);
-
-console.log(applesPositions.length, sandsPositions.length, watersPositions.length);
+addBlock(0, "sand", sandsPositions, true, false, false);
+addBlock(0, "water", watersPositions, true, true, false);
+addBlock(20, "apple", applesPositions, false, true, true);
 
 let gameInterval;
 
@@ -42,7 +41,7 @@ document.addEventListener("keydown", (e) => {
     } else if (e.key == "x") {
         speed = speed * 2;
         updateSpeed(speed);
-    }
+    };
 });
 
 function updateSpeed(newSpeed) {
@@ -54,7 +53,13 @@ function updateSpeed(newSpeed) {
     gameInterval = setInterval(moveSnake, newSpeed);
 }
 
+function blocksLeft() {
+    return totalBlocks - sandsPositions.length - watersPositions.length - blocksPositions.length - applesPositions.length;
+}
+
 function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
+    if(quant > blocksLeft()) quant = blocksLeft();
+
     for (let i = 0; i < quant; i++) {
         let isOnSnake, isOnSand, isOnWater, isOnApple, x, y;
     
@@ -62,16 +67,12 @@ function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
             x = Math.floor(Math.random() * (container.offsetWidth / GRID_SIZE)) * GRID_SIZE;
             y = Math.floor(Math.random() * (container.offsetHeight / GRID_SIZE)) * GRID_SIZE;
 
-            console.log(blocksPositions)
             isOnSnake = blocksPositions.some(pos => pos[1] == y && pos[0] == x);
 
-            isOnSand = sandsPositions.some(pos => pos[1] == y && pos[0] == x);
-            isOnWater = watersPositions.some(pos => pos[1] == y && pos[0] == x);
-            isOnApple = applesPositions.some(pos => pos[1] == y && pos[0] == x);
-        } while (isOnSnake || 
-            (avoidSand && isOnSand) || 
-            (avoidWater && isOnWater) || 
-            (avoidApple && isOnApple));
+            isOnSand = avoidSand ? sandsPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+            isOnWater = avoidWater ? watersPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+            isOnApple = avoidApple ? applesPositions.some(pos => pos[1] == y && pos[0] == x) : false;
+        } while (isOnSnake || isOnSand || isOnWater || isOnApple);
     
         let b = createBlock();
         b.classList.add(type);
@@ -83,13 +84,13 @@ function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
         container.appendChild(b);
     
         list.push([x, y]);
-    }
+    };
 }
 
 function positionBlocks(number) {
     for (let i = 0; i < number; i++) {
         blocksPositions.push([fleft - i * movement, ftop]);
-    }
+    };
 
     blocksPositions.forEach((position) => {
         let b = createBlock();
@@ -117,7 +118,7 @@ function moveSnake() {
         fleft += movement;
     } else if (side == "left") {
         fleft -= movement;
-    }
+    };
 
     if (ftop < 0) ftop = 0;
     if (fleft < 0) fleft = 0;
@@ -130,7 +131,7 @@ function moveSnake() {
         location.reload();
     } else {
         updateSpeed(speed);
-    }
+    };
 
     blocksPositions.unshift([fleft, ftop]);
     blocksPositions.pop();
@@ -140,7 +141,7 @@ function moveSnake() {
         if (blocksPositions[0][0] == position[0] && blocksPositions[0][1] == position[1] && index != 0) {
             //alert("Game Over! The snake collided with itself.");
             location.reload();
-        }
+        };
 
         list[index].style.top = position[1] + "px";
         list[index].style.left = position[0] + "px";
@@ -157,7 +158,7 @@ function moveSnake() {
 
                 applesPositions.splice(index, 1);
 
-                addBlock(1, "apple", applesPositions, true, false, false);
+                addBlock(1, "apple", applesPositions, false, true, true);
 
                 const tailPosition = blocksPositions[blocksPositions.length - 1];
                 let b = document.createElement("div");
@@ -170,8 +171,8 @@ function moveSnake() {
 
                 container.appendChild(b);
 
-                blocksPositions.push([...tailPosition]);
-            }
-        }
+                blocksPositions.push(tailPosition);
+            };
+        };
     });
-}
+};
