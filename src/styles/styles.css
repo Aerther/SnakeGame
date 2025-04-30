@@ -37,9 +37,8 @@ body {
 }
 
 .apple {
-    background-image: url("/src/images/apple.png");
+    background-image: url("../images/apple.png");
     background-size: cover;
-    background-color: violet;
 
     position: absolute;
     aspect-ratio: 1/1;
