@@ -1,35 +1,42 @@
 const container = document.getElementById("container");
 
-const BLOCK_SIZE = 50;
+const BLOCK_SIZE = 40;
+const widthblocks = 21;
+const heightblocks = 15;
 let speed = 300;
 let fleft = BLOCK_SIZE * 2;
 let ftop = Math.floor(container.offsetHeight / 2 / BLOCK_SIZE) * BLOCK_SIZE;
 let side = "right";
 const totalBlocks = (container.offsetHeight / BLOCK_SIZE) * (container.offsetWidth / BLOCK_SIZE);
 
+container.style.width = widthblocks*BLOCK_SIZE + "px";
+container.style.height = heightblocks*BLOCK_SIZE + "px";
 container.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
-stage1 = ["as ng ng ng ng ng ng ng ns ng ng ng ng ng ng ng ng ng",
-          "as ng ng ng ng ng ng ng as ng ng ng ng ng ng ng ng ng",
-          "as ng ng ng ng ng ng as ns ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ng nw ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ag ng np ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ns np ns ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ns np ag ng ng ag ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ns ap ag ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng sg np ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ng ag ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng", 
-          "as ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng"];
+stage1 = ["nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb",
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb",
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb",
+          "nb ng ng ag ng fg ng rg ns ns ng nb ng nw ng ng ng ng ng ng nb",
+          "nb ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng ng nb",
+          "nb ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
+          "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb"];
 
-stage1Body = [[9*BLOCK_SIZE, 8*BLOCK_SIZE], [9*BLOCK_SIZE, 9*BLOCK_SIZE]];
+stage1Body = [{x: 9*BLOCK_SIZE, y: 8*BLOCK_SIZE}, {x: 9*BLOCK_SIZE, y: 9*BLOCK_SIZE}];
 
 let blocksPositions = [];
 let applesPositions = [];
 let sandsPositions = [];
 let watersPositions = [];
 let wallsPositions = [];
-let addSpeedPositions = [];
+let speedPositions = [];
 
 //positionBlocks(3);
 //addBlock(0, "sand", sandsPositions, true, false, false);
@@ -39,8 +46,8 @@ let addSpeedPositions = [];
 makeGame(stage1, stage1Body, "up");
 function makeGame(stage, body, direction) {
     blocksPositions = body;
-    fleft = stage1Body[0][0];
-    ftop = stage1Body[0][1];
+    fleft = stage1Body[0].x;
+    ftop = stage1Body[0].y;
     side = direction;
 
     addBodyParts(blocksPositions);
@@ -51,23 +58,68 @@ function makeGame(stage, body, direction) {
         for(let x=0; x < stage[y].length; x++) {
             let block = stage[y][x];
 
+            let infoPowerUp = {
+                x: x * BLOCK_SIZE,
+                y: y * BLOCK_SIZE,
+                type: null,
+                list: null
+            }
+
+            let infoBackground = {
+                x: x * BLOCK_SIZE,
+                y: y * BLOCK_SIZE
+            }
+
             if(block[0] == "a") {
-                addOneBlock("apple", applesPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
-            } else if(block[0] == "s") {
-                addOneBlock("add-speed", addSpeedPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+                infoPowerUp.type = "apple";
+                infoPowerUp.list = applesPositions;
+            } else if(block[0] == "f") {
+                infoPowerUp.type = "add-speed";
+                infoPowerUp.list = speedPositions;
+                infoPowerUp.calculateSpeed = () => {speed = speed / 2};
+            } else if(block[0] == "r") {
+                infoPowerUp.type = "reduce-speed";
+                infoPowerUp.list = speedPositions;
+                infoPowerUp.calculateSpeed = () => {speed = speed * 2};
             }
 
             if(block[1] == "g") {
-                addOneBlock("grass", null, x*BLOCK_SIZE, y*BLOCK_SIZE);
+                infoBackground.type = "grass";
+                infoBackground.list = null;
             } else if(block[1] == "w") {
-                addOneBlock("water", watersPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
+                infoBackground.type = "water";
+                infoBackground.list = watersPositions;
             } else if(block[1] == "s") {
-                addOneBlock("sand", sandsPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
-            } else if(block[1] == "p") {
-                addOneBlock("wall", wallsPositions, x*BLOCK_SIZE, y*BLOCK_SIZE);
-            } 
+                infoBackground.type = "sand";
+                infoBackground.list = sandsPositions;
+            } else if(block[1] == "b") {
+                infoBackground.type = "wall";
+                infoBackground.list = wallsPositions;
+            }
+
+            if(infoPowerUp.type != null) {
+                infoPowerUp.list.push(infoPowerUp);
+                addOneBlock(infoPowerUp.type, infoPowerUp.x, infoPowerUp.y);
+            }
+
+            if(infoBackground.list != null) {
+                infoBackground.list.push(infoBackground);
+            }
+
+            addOneBlock(infoBackground.type, infoBackground.x, infoBackground.y);
         }
     }
+};
+
+function addOneBlock(type, x, y) {
+    let b = createBlock();
+    b.classList.add(type);
+    
+    b.style.width = BLOCK_SIZE + "px";
+    b.style.top = y + "px";
+    b.style.left = x + "px";
+    
+    container.appendChild(b);
 };
 
 let gameInterval;
@@ -114,29 +166,15 @@ function addBodyParts(list) {
 
         b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
         b.style.width = BLOCK_SIZE + "px";
-        b.style.top = position[1] + "px";
-        b.style.left = position[0] + "px";
+        b.style.top = position.y + "px";
+        b.style.left = position.x + "px";
 
         if(index == 0) {
             b.classList.add("head");
         }
+
         container.appendChild(b);
     });
-};
-
-function addOneBlock(type, list, x, y) {
-    let b = createBlock();
-    b.classList.add(type);
-    
-    b.style.width = BLOCK_SIZE + "px";
-    b.style.top = y + "px";
-    b.style.left = x + "px";
-    
-    container.appendChild(b);
-    
-    try {
-        list.push([x, y]);
-    } catch(e) {};
 };
 
 function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
@@ -191,39 +229,67 @@ function createBlock() {
     return document.createElement("div");
 }
 
+function checkCollision(list, fleft, ftop) {
+    for (let i = 0; i < list.length; i++) {
+        if (list[i].x == fleft && list[i].y == ftop) {
+            return { collided: true, index: i };
+        }
+    }
+
+    return { collided: false, index: -1 };
+}
+
 function moveSnake() {
+    let head = container.getElementsByClassName("head")[0];
+
     if (side == "down") {
         ftop += BLOCK_SIZE;
+        head.style.transform = "rotate(180deg)";
     } else if (side == "up") {
         ftop -= BLOCK_SIZE;
+        head.style.transform = "rotate(0deg)";
     } else if (side == "right") {
+        head.style.transform = "rotate(90deg)";
         fleft += BLOCK_SIZE;
     } else if (side == "left") {
+        head.style.transform = "rotate(270deg)";
         fleft -= BLOCK_SIZE;
     };
 
+    /*
     if((ftop < 0 || ftop > container.offsetHeight - BLOCK_SIZE) || (fleft < 0 || fleft > container.offsetWidth - BLOCK_SIZE)) {
         location.reload();
     }
+    */
 
-    if(sandsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
-        updateSpeed(speed * 3);
-    } else if(addSpeedPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
-        speed = speed / 3;
+    let sandCollision = checkCollision(sandsPositions, fleft, ftop);
+    let speedCollision = checkCollision(speedPositions, fleft, ftop);
+    let waterCollision = checkCollision(watersPositions, fleft, ftop);
+    let wallCollision = checkCollision(wallsPositions, fleft, ftop);
+
+    if(speedCollision.collided) {
+        speedPositions[speedCollision.index].calculateSpeed();
         updateSpeed(speed)
 
-        let speedElement = Array.from(container.getElementsByClassName("add-speed")).find(
-            (apple) => parseInt(apple.style.left) === fleft && parseInt(apple.style.top) === ftop
-        );
+        let elements = container.getElementsByClassName(speedPositions[speedCollision.index].type);
 
-        container.removeChild(speedElement);
-    } else if(watersPositions.some(pos => pos[0] == fleft && pos[1] == ftop) || wallsPositions.some(pos => pos[0] == fleft && pos[1] == ftop)) {
+        while (elements.length > 0) {
+            container.removeChild(elements[0]);
+        }
+
+        speedPositions = speedPositions.filter((e, i) => i != speedCollision.index);
+
+    }
+
+    if(sandCollision.collided) {
+        updateSpeed(speed * 3);
+    } else if(waterCollision.collided || wallCollision.collided) {
         location.reload();
     } else {
         updateSpeed(speed);
     };
 
-    blocksPositions.unshift([fleft, ftop]);
+    blocksPositions.unshift({ x: fleft, y: ftop });
     
     if(blocksPositions.length != 1) {
         blocksPositions.pop();
@@ -231,19 +297,19 @@ function moveSnake() {
 
     const list = Array.from(container.getElementsByClassName("body-part"));
     blocksPositions.forEach((position, index) => {
-        if (blocksPositions[0][0] == position[0] && blocksPositions[0][1] == position[1] && index != 0) {
+        if (blocksPositions[0].x == position.x && blocksPositions[0].y == position.y && index != 0) {
             //alert("Game Over! The snake collided with itself.");
             location.reload();
         };
 
-        list[index].style.top = position[1] + "px";
-        list[index].style.left = position[0] + "px";
+        list[index].style.top = position.y + "px";
+        list[index].style.left = position.x + "px";
     });
 
     applesPositions.forEach((applePosition, index) => {
-        if (applePosition[0] === fleft && applePosition[1] === ftop) {
+        if (applePosition.x === fleft && applePosition.y === ftop) {
             const appleElement = Array.from(container.getElementsByClassName("apple")).find(
-                (apple) => parseInt(apple.style.left) === applePosition[0] && parseInt(apple.style.top) === applePosition[1]
+                (apple) => parseInt(apple.style.left) === applePosition.x && parseInt(apple.style.top) === applePosition.y
             );
 
             if (appleElement) {
@@ -251,7 +317,7 @@ function moveSnake() {
 
                 applesPositions.splice(index, 1);
 
-                addBlock(1, "apple", applesPositions, false, true, true);
+                //addBlock(1, "apple", applesPositions, false, true, true);
 
                 const tailPosition = blocksPositions[blocksPositions.length - 1];
                 let b = document.createElement("div");
@@ -259,8 +325,8 @@ function moveSnake() {
 
                 b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
                 b.style.width = BLOCK_SIZE + "px";
-                b.style.top = tailPosition[1] + "px";
-                b.style.left = tailPosition[0] + "px";
+                b.style.top = tailPosition.y + "px";
+                b.style.left = tailPosition.x + "px";
 
                 container.appendChild(b);
 
