@@ -13,23 +13,40 @@ container.style.width = widthblocks*BLOCK_SIZE + "px";
 container.style.height = heightblocks*BLOCK_SIZE + "px";
 container.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
-stage1 = ["nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb",
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb",
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb",
-          "nb ng ng ag ng fg ng rg ns ns ng nb ng nw ng ng ng ng ng ng nb",
-          "nb ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng ng nb",
-          "nb ng ng ng ng ng ng ng ns ns ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng ng nb", 
-          "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb"];
+stage1 = [
+    "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb",
+    "nb ns ns ns nb ng ng ng ng ng nb ng ng ng ng ng ng ng ng ng nb",
+    "nb ns ns ns nb nb nb ng nb ng nb nb nb ng nb nb nb nb nb ng nb",
+    "nb nb nb ns ns ns ng ng nb ng ng ng ng ng nb ng nb ng ng ng nb",
+    "nb ng nb nb nb nb nb nb nb nb nb nb nb nb nb ng nb ng nb nb nb",
+    "nb ng ng ng ag ag ag ng ng ng ng ng nb ng ng ng nb ng ng ng nb",
+    "nb nb nb nb nb nb nb ng nb nb nb nb nb ng nb ng nb nb nb ng nb",
+    "nb ng ng ng ag ag ag ng nb ng ng ng ng ng nb ng ng ng ng ng nb",
+    "nb ng nb nb nb nb nb nb nb ng nb nb nb nb nb nb nb nb nb nb nb",
+    "nb ng nb ng ng ng nb ng ng ng nb ng ng ng ng ng ng ng ng ng nb",
+    "nb ng nb ng nb ng nb ng nb nb nb ng nb nb nb ng nb nb nb ng nb",
+    "nb ng ng ng nb ng ng ng nb ng ng ng ng ng nb ng nb ng ng ng nb",
+    "nb ng nb nb nb nb nb nb nb nb nb nb nb nb nb ng nb ng nb nb nb",
+    "nb ng ng ng rg ng ng ng ng ng ng ng ng fg ng ng nb ng ng nf nb",
+    "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb"
+];
+  
+stage1Body = [
+    { x: 18*BLOCK_SIZE, y: 9*BLOCK_SIZE }, 
+    { x: 19*BLOCK_SIZE, y: 9*BLOCK_SIZE }, 
+    { x: 19*BLOCK_SIZE, y: 10*BLOCK_SIZE }
+];
 
-stage1Body = [{x: 9*BLOCK_SIZE, y: 8*BLOCK_SIZE}, {x: 9*BLOCK_SIZE, y: 9*BLOCK_SIZE}];
+teleports = [
+    { x: 13*BLOCK_SIZE, y: 11*BLOCK_SIZE, gotoX: 1*BLOCK_SIZE, gotoY: 1*BLOCK_SIZE} ,
+];
+
+let rotateHead = {
+    down: "180",
+    up: "0",
+    right: "90",
+    left: "270"
+};
 
 let blocksPositions = [];
 let applesPositions = [];
@@ -37,13 +54,33 @@ let sandsPositions = [];
 let watersPositions = [];
 let wallsPositions = [];
 let speedPositions = [];
+let finishPositions = [];
+let teleportPositions = [];
 
 //positionBlocks(3);
 //addBlock(0, "sand", sandsPositions, true, false, false);
 //addBlock(0, "water", watersPositions, true, true, false);
 //addBlock(20, "apple", applesPositions, false, true, true);
 
-makeGame(stage1, stage1Body, "up");
+makeGame(stage1, stage1Body, "left");
+
+function addTeleport() {
+    teleports.forEach((e, i) => {
+        let infoTeleport = {
+            x: e.gotoX,
+            y: e.gotoY,
+            gotoX: e.x,
+            gotoY: e.y
+        };
+
+        addOneBlock("teleport", e.x, e.y);
+        addOneBlock("teleport", e.gotoX, e.gotoY);
+
+        teleportPositions.push(e);
+        teleportPositions.push(infoTeleport);
+    });
+}
+
 function makeGame(stage, body, direction) {
     blocksPositions = body;
     fleft = stage1Body[0].x;
@@ -51,6 +88,8 @@ function makeGame(stage, body, direction) {
     side = direction;
 
     addBodyParts(blocksPositions);
+    addTeleport();
+    updateHeadBorder();
 
     stage = stage.map(row => row.split(" "));
 
@@ -67,7 +106,9 @@ function makeGame(stage, body, direction) {
 
             let infoBackground = {
                 x: x * BLOCK_SIZE,
-                y: y * BLOCK_SIZE
+                y: y * BLOCK_SIZE,
+                type: null,
+                list: null
             }
 
             if(block[0] == "a") {
@@ -76,11 +117,11 @@ function makeGame(stage, body, direction) {
             } else if(block[0] == "f") {
                 infoPowerUp.type = "add-speed";
                 infoPowerUp.list = speedPositions;
-                infoPowerUp.calculateSpeed = () => {speed = speed / 2};
+                infoPowerUp.calculateSpeed = () => {speed = speed / 1.5};
             } else if(block[0] == "r") {
                 infoPowerUp.type = "reduce-speed";
                 infoPowerUp.list = speedPositions;
-                infoPowerUp.calculateSpeed = () => {speed = speed * 2};
+                infoPowerUp.calculateSpeed = () => {speed = speed * 1.5};
             }
 
             if(block[1] == "g") {
@@ -95,6 +136,9 @@ function makeGame(stage, body, direction) {
             } else if(block[1] == "b") {
                 infoBackground.type = "wall";
                 infoBackground.list = wallsPositions;
+            } else if(block[1] == "f") {
+                infoBackground.type = "finish";
+                infoBackground.list = finishPositions;
             }
 
             if(infoPowerUp.type != null) {
@@ -137,13 +181,7 @@ document.addEventListener("keydown", (e) => {
         side = "right";
     } else if ((e.key == "ArrowLeft" || e.key == "a") && side != "right") {
         side = "left";
-    } else if (e.key == " ") {
-        speed = speed / 2;
-        updateSpeed(speed);
-    } else if (e.key == "x") {
-        speed = speed * 2;
-        updateSpeed(speed);
-    };
+    }
 });
 
 function updateSpeed(newSpeed) {
@@ -177,56 +215,10 @@ function addBodyParts(list) {
     });
 };
 
-function addBlock(quant, type, list, avoidSand, avoidWater, avoidApple) {
-    if(quant > blocksLeft()) quant = blocksLeft();
-
-    for (let i = 0; i < quant; i++) {
-        let isOnSnake, isOnSand, isOnWater, isOnApple, x, y;
-    
-        do {
-            x = Math.floor(Math.random() * (container.offsetWidth / BLOCK_SIZE)) * BLOCK_SIZE;
-            y = Math.floor(Math.random() * (container.offsetHeight / BLOCK_SIZE)) * BLOCK_SIZE;
-
-            isOnSnake = blocksPositions.some(pos => pos[1] == y && pos[0] == x);
-
-            isOnSand = avoidSand ? sandsPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-            isOnWater = avoidWater ? watersPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-            isOnApple = avoidApple ? applesPositions.some(pos => pos[1] == y && pos[0] == x) : false;
-        } while (isOnSnake || isOnSand || isOnWater || isOnApple);
-    
-        let b = createBlock();
-        b.classList.add(type);
-    
-        b.style.width = BLOCK_SIZE + "px";
-        b.style.top = y + "px";
-        b.style.left = x + "px";
-    
-        container.appendChild(b);
-    
-        list.push([x, y]);
-    };
-}
-
-function positionBlocks(number) {
-    for (let i = 0; i < number; i++) {
-        blocksPositions.push([fleft - i * BLOCK_SIZE, ftop]);
-    };
-
-    blocksPositions.forEach((position) => {
-        let b = createBlock();
-        b.classList.add("body-part");
-
-        b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
-        b.style.width = BLOCK_SIZE + "px";
-        b.style.top = position[1] + "px";
-        b.style.left = position[0] + "px";
-
-        container.appendChild(b);
-    });
-}
-
 function createBlock() {
-    return document.createElement("div");
+    let b = document.createElement("div");
+    b.classList.add("block");
+    return b;
 }
 
 function checkCollision(list, fleft, ftop) {
@@ -239,33 +231,32 @@ function checkCollision(list, fleft, ftop) {
     return { collided: false, index: -1 };
 }
 
+function updateHeadBorder() {
+    let head = container.getElementsByClassName("head")[0];
+
+    head.style.transform = `rotate(${rotateHead[side]}deg)`;
+}
+
 function moveSnake() {
     let head = container.getElementsByClassName("head")[0];
 
     if (side == "down") {
         ftop += BLOCK_SIZE;
-        head.style.transform = "rotate(180deg)";
     } else if (side == "up") {
         ftop -= BLOCK_SIZE;
-        head.style.transform = "rotate(0deg)";
     } else if (side == "right") {
-        head.style.transform = "rotate(90deg)";
         fleft += BLOCK_SIZE;
     } else if (side == "left") {
-        head.style.transform = "rotate(270deg)";
         fleft -= BLOCK_SIZE;
     };
 
-    /*
-    if((ftop < 0 || ftop > container.offsetHeight - BLOCK_SIZE) || (fleft < 0 || fleft > container.offsetWidth - BLOCK_SIZE)) {
-        location.reload();
-    }
-    */
-
+    updateHeadBorder();
     let sandCollision = checkCollision(sandsPositions, fleft, ftop);
     let speedCollision = checkCollision(speedPositions, fleft, ftop);
     let waterCollision = checkCollision(watersPositions, fleft, ftop);
     let wallCollision = checkCollision(wallsPositions, fleft, ftop);
+    let finishCollision = checkCollision(finishPositions, fleft, ftop);
+    let teleportCollision = checkCollision(teleportPositions, fleft, ftop);
 
     if(speedCollision.collided) {
         speedPositions[speedCollision.index].calculateSpeed();
@@ -279,12 +270,19 @@ function moveSnake() {
 
         speedPositions = speedPositions.filter((e, i) => i != speedCollision.index);
 
+    } else if(teleportCollision.collided) {
+        let element = teleportPositions[teleportCollision.index];
+
+        fleft = element.gotoX;
+        ftop = element.gotoY;
     }
 
     if(sandCollision.collided) {
         updateSpeed(speed * 3);
     } else if(waterCollision.collided || wallCollision.collided) {
         location.reload();
+    } else if(finishCollision.collided) {
+        alert("you won");
     } else {
         updateSpeed(speed);
     };

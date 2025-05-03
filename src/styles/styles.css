@@ -20,7 +20,6 @@ body {
 
     border-right: 1px solid #ccc;
     border-bottom: 1px solid #ccc;
-    background-image: linear-gradient(to right, #ccc 1px, transparent 1px), linear-gradient(to bottom, #ccc 1px, transparent 1px);
 }
 
 .body-part {
@@ -36,71 +35,66 @@ body {
     border-top-left-radius: 20px;
 }
 
-.apple {
-    background-image: url("../images/apple.png");
-    background-size: cover;
+.block {
+    background-size: 40px 40px;
 
     position: absolute;
     aspect-ratio: 1/1;
+}
+
+.apple {
+    background-image: url("../images/apple.png");
+    
     z-index: 2;
 
     animation: rotate 2s linear infinite;
 }
 
 .sand {
-    background-color: yellow;
-    aspect-ratio: 1/1;
-    position: absolute;
     z-index: 0;
 
     background-image: url("../sprites/sand.png");
-    background-size: 40px 40px;
-
+    
     filter: saturate(0.9);
 }
 
 .water {
     background-color: blue;
-    aspect-ratio: 1/1;
-    position: absolute;
     z-index: 0;
 
     background-image: url("../sprites/water.png");
-    background-size: 40px 40px;
 
     filter: saturate(0.6);
 }
 
+.finish {
+    z-index: 0;
+
+    background-image: url("../sprites/finish.png");
+}
+
+.teleport {
+    background-color: orange;
+
+    z-index: 1;
+}
+
 .grass {
-    background-color: greenyellow;
-    aspect-ratio: 1/1;
-    position: absolute;
     z-index: 0;
 
     filter: hue-rotate(0deg) saturate(0.7);
 
-    border-right: 1px solid black;
-    border-bottom: 1px solid black;
-    background-size: 40px 40px;
-    background-image: url("../sprites/grass.png"), linear-gradient(to right, black 1px, transparent 1px), linear-gradient(to bottom, black 1px, transparent 1px);
+    border: 1px solid green;
+    background-image: url("../sprites/grass.png");
 }
 
 .wall {
-    background-color: gray;
-    aspect-ratio: 1/1;
-    position: absolute;
-
     background-image: url("../sprites/wall.png");
-    background-size: cover;
     z-index: 0;
 }
 
 .add-speed {
-    aspect-ratio: 1/1;
-    position: absolute;
-
     background-image: url("../sprites/speed.png");
-    background-size: 40px 40px;
 
     transform: rotate(-90deg);
     filter: hue-rotate(90deg) saturate(5);
@@ -109,11 +103,7 @@ body {
 }
 
 .reduce-speed {
-    aspect-ratio: 1/1;
-    position: absolute;
-
     background-image: url("../sprites/speed.png");
-    background-size: 40px 40px;
 
     transform: rotate(90deg);
     filter: hue-rotate(0deg) saturate(5);
