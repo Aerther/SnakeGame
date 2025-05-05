@@ -7,13 +7,14 @@ let speed = 300;
 let fleft = BLOCK_SIZE * 2;
 let ftop = Math.floor(container.offsetHeight / 2 / BLOCK_SIZE) * BLOCK_SIZE;
 let side = "right";
+let isInvincible = false;
 const totalBlocks = (container.offsetHeight / BLOCK_SIZE) * (container.offsetWidth / BLOCK_SIZE);
 
 container.style.width = widthblocks*BLOCK_SIZE + "px";
 container.style.height = heightblocks*BLOCK_SIZE + "px";
 container.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
-stage1 = [
+let stage1 = [
     "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb",
     "nb ns ns ns nb ng ng ng ng ng nb ng ng ng ng ng ng ng ng ng nb",
     "nb ns ns ns nb nb nb ng nb ng nb nb nb ng nb nb nb nb nb ng nb",
@@ -27,19 +28,19 @@ stage1 = [
     "nb ng nb ng nb ng nb ng nb nb nb ng nb nb nb ng nb nb nb ng nb",
     "nb ng ng ng nb ng ng ng nb ng ng ng ng ng nb ng nb ng ng ng nb",
     "nb ng nb nb nb nb nb nb nb nb nb nb nb nb nb ng nb ng nb nb nb",
-    "nb ng ng ng rg ng ng ng ng ng ng ng ng fg ng ng nb ng ng nf nb",
+    "nb ng ng ng rg ng ng ng sg ng ng ng ng fg ng ng nb ng ng nf nb",
     "nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb nb"
 ];
   
-stage1Body = [
+let stage1Body = [
     { x: 18*BLOCK_SIZE, y: 9*BLOCK_SIZE }, 
     { x: 19*BLOCK_SIZE, y: 9*BLOCK_SIZE }, 
     { x: 19*BLOCK_SIZE, y: 10*BLOCK_SIZE }
 ];
 
-teleports = [
-    { x: 13*BLOCK_SIZE, y: 11*BLOCK_SIZE, gotoX: 1*BLOCK_SIZE, gotoY: 1*BLOCK_SIZE} ,
-];
+// teleports = [{ x: 13*BLOCK_SIZE, y: 11*BLOCK_SIZE, gotoX: 1*BLOCK_SIZE, gotoY: 1*BLOCK_SIZE}];
+
+let teleports = [];
 
 let rotateHead = {
     down: "180",
@@ -56,11 +57,7 @@ let wallsPositions = [];
 let speedPositions = [];
 let finishPositions = [];
 let teleportPositions = [];
-
-//positionBlocks(3);
-//addBlock(0, "sand", sandsPositions, true, false, false);
-//addBlock(0, "water", watersPositions, true, true, false);
-//addBlock(20, "apple", applesPositions, false, true, true);
+let strawberrysPositions = [];
 
 makeGame(stage1, stage1Body, "left");
 
@@ -122,6 +119,9 @@ function makeGame(stage, body, direction) {
                 infoPowerUp.type = "reduce-speed";
                 infoPowerUp.list = speedPositions;
                 infoPowerUp.calculateSpeed = () => {speed = speed * 1.5};
+            } else if(block[0] == "s") {
+                infoPowerUp.type = "strawberry";
+                infoPowerUp.list = strawberrysPositions;
             }
 
             if(block[1] == "g") {
@@ -238,8 +238,6 @@ function updateHeadBorder() {
 }
 
 function moveSnake() {
-    let head = container.getElementsByClassName("head")[0];
-
     if (side == "down") {
         ftop += BLOCK_SIZE;
     } else if (side == "up") {
@@ -251,6 +249,7 @@ function moveSnake() {
     };
 
     updateHeadBorder();
+    let strawberryCollision = checkCollision(strawberrysPositions, fleft, ftop);
     let sandCollision = checkCollision(sandsPositions, fleft, ftop);
     let speedCollision = checkCollision(speedPositions, fleft, ftop);
     let waterCollision = checkCollision(watersPositions, fleft, ftop);
@@ -258,7 +257,11 @@ function moveSnake() {
     let finishCollision = checkCollision(finishPositions, fleft, ftop);
     let teleportCollision = checkCollision(teleportPositions, fleft, ftop);
 
-    if(speedCollision.collided) {
+    if(strawberryCollision.collided) {
+        isInvincible = true;
+        setTimeout(() => {isInvincible = false}, 3000);
+
+    } else if(speedCollision.collided) {
         speedPositions[speedCollision.index].calculateSpeed();
         updateSpeed(speed)
 
@@ -275,14 +278,18 @@ function moveSnake() {
 
         fleft = element.gotoX;
         ftop = element.gotoY;
-    }
+    };
 
     if(sandCollision.collided) {
         updateSpeed(speed * 3);
-    } else if(waterCollision.collided || wallCollision.collided) {
-        location.reload();
-    } else if(finishCollision.collided) {
-        alert("you won");
+    } else if(!isInvincible) {
+
+        if(waterCollision.collided || wallCollision.collided) {
+            location.reload();
+        } else if(finishCollision.collided) {
+            alert("you won");
+        };
+
     } else {
         updateSpeed(speed);
     };
