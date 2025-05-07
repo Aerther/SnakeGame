@@ -1,34 +1,37 @@
-function addBlock(type, x, y) {
-    let b = createBlock();
-    b.classList.add(type);
+import { gameContainer, snakeSpeed, BLOCK_SIZE } from "./global";
+
+// Add one block to the gameContainer
+export function addBlockToGame(x, y, type) {
+    let b = createBlock(x, y, type);
     
-    b.style.width = BLOCK_SIZE + "px";
-    b.style.top = y + "px";
-    b.style.left = x + "px";
-    
-    container.appendChild(b);
+    gameContainer.appendChild(b);
 };
 
-function createBlock() {
+// Create a div with the block class and type class
+export function createBlock(x, y, type) {
     let b = document.createElement("div");
+
     b.classList.add("block");
+    b.classList.add(type);
+
+    b.style.width = BLOCK_SIZE + "px";
+    b.style.left = x + "px";
+    b.style.top = y + "px";
+
     return b;
 };
 
-function addBodyParts(list) {
-    list.forEach((position, index) => {
-        let b = createBlock();
-        b.classList.add("body-part");
+// Add the snake's body parts
+export function addSnakeBody(positionsBodyParts) {
+    positionsBodyParts.forEach((bodyPart, index) => {
+        let b = createBlock(bodyPart.x, bodyPart.y, "body-part");
 
-        b.style.transition = `top ${speed}ms linear, left ${speed}ms linear`;
-        b.style.width = BLOCK_SIZE + "px";
-        b.style.top = position.y + "px";
-        b.style.left = position.x + "px";
+        b.style.transition = `top ${snakeSpeed}ms linear, left ${snakeSpeed}ms linear`;
 
-        if(index == 0) {
+        if(index == 0 && positionsBodyParts.length > 1) {
             b.classList.add("head");
         };
 
-        container.appendChild(b);
+        gameContainer.appendChild(b);
     });
 };

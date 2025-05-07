@@ -1,17 +1,7 @@
 import { snakeDirection, snakeHeadX, snakeHeadY, BLOCK_SIZE, rotateHead} from "./global";
 import { isPlayerInvincible } from "./states";
 import { checkCollision } from "./collision";
-import { 
-    positionsBodyParts, 
-    positionsApples, 
-    positionsSpeedBoosts, 
-    positionsStrawberries, 
-    positionsFinish, 
-    positionsWalls, 
-    positionsSands, 
-    positionsWaters, 
-    positionsTeleports 
-} from "./states";
+import * as states from "./states";
 
 export function updateHeadBorder() {
     let head = container.getElementsByClassName("head")[0];
@@ -19,7 +9,7 @@ export function updateHeadBorder() {
     head.style.transform = `rotate(${rotateHead[snakeDirection]}deg)`;
 };
 
-export function moveSnake() {
+export function tickGameLoop() {
     if (snakeDirection == "down") {
         snakeHeadX += BLOCK_SIZE;
     } else if (snakeDirection == "up") {

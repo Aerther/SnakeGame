@@ -1,4 +1,5 @@
 export const gameContainer = document.getElementById("container");
+export const snakeHeadElement = document.getElementsByClassName("head")[0];
 
 export const BLOCK_SIZE = 40;
 export const BLOCKS_WIDTH = 21;
@@ -21,8 +22,8 @@ export let snakeDirection;
 
 // Sets the rotation of the head depending on the snakeDirection (see movement)
 export const rotateHead = {
-    down: "180",
-    up: "0",
-    right: "90",
-    left: "270"
+    down: 180,
+    up: 0,
+    right: 90,
+    left: 270
 };

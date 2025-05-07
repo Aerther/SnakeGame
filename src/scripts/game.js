@@ -1,19 +1,8 @@
-import { snakeDirection, snakeHeadX, snakeHeadY } from "./global";
-import { BLOCK_SIZE, TOTAL_BLOCK_COUNT } from "./global";
+import { snakeDirection, snakeHeadX, snakeHeadY, BLOCK_SIZE, TOTAL_BLOCK_COUNT} from "./global";
 import { updateHeadBorder } from "./movement";
-import { 
-    positionsBodyParts, 
-    positionsApples, 
-    positionsSpeedBoosts, 
-    positionsStrawberries, 
-    positionsFinish, 
-    positionsWalls, 
-    positionsSands, 
-    positionsWaters, 
-    positionsTeleports 
-} from "./states";
+import { powerUpsData, blocksData } from "./states";
 
-export function makeGame(stageMap, bodyPartsPositions, direction) {
+export function loadLevel(stageMap, bodyPartsPositions, direction) {
     // Sets the positions of the snake's body parts
     positionsBodyParts = bodyPartsPositions;
 
@@ -24,9 +13,9 @@ export function makeGame(stageMap, bodyPartsPositions, direction) {
     // Sets the direction of the snake
     snakeDirection = direction;
 
-   // addpositionsBodyPartsrts(blocksPositions);
+   // addbodyParts(blocksPositions);
    // addTeleport();
-    updateHeadBorder();
+    //updateHeadBorder();
 
     // Make the stageMap be like [ [ [] ] ]
     stageMap = stageMap.map(row => row.split(" "));
@@ -36,52 +25,9 @@ export function makeGame(stageMap, bodyPartsPositions, direction) {
         for(let x=0; x < stageMap[y].length; x++) {
             let block = stageMap[y][x];
 
-            let infoPowerUp = {
-                x: x * BLOCK_SIZE,
-                y: y * BLOCK_SIZE,
-                type: null,
-                list: null
-            }
+            let infoPowerUp = powerUpsData[block[0]];
 
-            let infoBackground = {
-                x: x * BLOCK_SIZE,
-                y: y * BLOCK_SIZE,
-                type: null,
-                list: null
-            }
-
-            if(block[0] == "a") {
-                infoPowerUp.type = "apple";
-                infoPowerUp.list = positionsApples;
-            } else if(block[0] == "f") {
-                infoPowerUp.type = "add-speed";
-                infoPowerUp.list = positionsSpeedBoosts;
-                infoPowerUp.calculateSpeed = () => {speed = speed / 1.5};
-            } else if(block[0] == "r") {
-                infoPowerUp.type = "reduce-speed";
-                infoPowerUp.list = positionsSpeedBoosts;
-                infoPowerUp.calculateSpeed = () => {speed = speed * 1.5};
-            } else if(block[0] == "s") {
-                infoPowerUp.type = "strawberry";
-                infoPowerUp.list = positionsStrawberries;
-            }
-
-            if(block[1] == "g") {
-                infoBackground.type = "grass";
-                infoBackground.list = null;
-            } else if(block[1] == "w") {
-                infoBackground.type = "water";
-                infoBackground.list = positionsWaters;
-            } else if(block[1] == "s") {
-                infoBackground.type = "sand";
-                infoBackground.list = positionsSands;
-            } else if(block[1] == "b") {
-                infoBackground.type = "wall";
-                infoBackground.list = positionsWalls;
-            } else if(block[1] == "f") {
-                infoBackground.type = "finish";
-                infoBackground.list = positionsFinish;
-            }
+            let infoBackground = blocksData[block[1]];
 
             if(infoPowerUp.type != null) {
                 infoPowerUp.list.push(infoPowerUp);
@@ -98,12 +44,12 @@ export function makeGame(stageMap, bodyPartsPositions, direction) {
 };
 
 export function updateSpeed(interval, newSpeed) {
-    Array.from(container.getElementsByClassName("bodyPartsPositions-part")).forEach((positionsBodyPartsrt) => {
-        positionsBodyPartsrt.style.transition = `top ${newSpeed}ms linear, left ${newSpeed}ms linear`;
+    Array.from(container.getElementsByClassName("body-part")).forEach((bodyPart) => {
+        bodyPart.style.transition = `top ${newSpeed}ms linear, left ${newSpeed}ms linear`;
     });
 
     clearInterval(interval);
-    interval = setInterval(moveSnake, newSpeed);
+    return setInterval(moveSnake, newSpeed);
 };
 
 export function blocksLeft() {
