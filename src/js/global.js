@@ -21,7 +21,7 @@ export let snakeHeadY = Math.floor(gameContainer.offsetHeight / 2 / BLOCK_SIZE) 
 export let snakeDirection;
 
 // Sets the rotation of the head depending on the snakeDirection (see movement)
-export const rotateHead = {
+export const rotateSnakeElement = {
     down: 180,
     up: 0,
     right: 90,
