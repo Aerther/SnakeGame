@@ -98,4 +98,10 @@ export const powerUpsData = {
     s: dataStar,
     f: dataAddSpeed,
     r: dataReduceSpeed,
+    n: {type: null, list: null}
+};
+
+// Set positionsBodyParts
+export function setPositionsBodyParts(bodyPartsPositions) {
+    positionsBodyParts = bodyPartsPositions;
 };

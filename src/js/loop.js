@@ -1,10 +1,6 @@
-import { snakeDirection, snakeHeadX, snakeHeadY, BLOCK_SIZE} from "./global";
-import { isPlayerInvincible } from "./states";
-import { checkCollision } from "./collision";
-import * as states from "./states";
-
 export function tickGameLoop() {
-    if (snakeDirection == "down") {
+    console.log("oi")
+    /*if (snakeDirection == "down") {
         snakeHeadX += BLOCK_SIZE;
     } else if (snakeDirection == "up") {
         snakeHeadX -= BLOCK_SIZE;
@@ -104,5 +100,5 @@ export function tickGameLoop() {
                 blocksPositions.push(tailPosition);
             };
         };
-    });
+    });*/
 };

@@ -1,3 +1,8 @@
+import { BLOCK_SIZE } from "./global.js";
+
+// Used to know which level we are
+export let levelNumber = 1;
+
 // Level 1
 const mapLevel1 = [
     ["nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb"],
@@ -13,7 +18,7 @@ const mapLevel1 = [
     ["nb", "ng", "nb", "ng", "nb", "ng", "nb", "ng", "nb", "nb", "nb", "ng", "nb", "nb", "nb", "ng", "nb", "nb", "nb", "ng", "nb"],
     ["nb", "ng", "ng", "ng", "nb", "ng", "ng", "ng", "nb", "ng", "ng", "ng", "ng", "ng", "nb", "ng", "nb", "ng", "ng", "ng", "nb"],
     ["nb", "ng", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "ng", "nb", "ng", "nb", "nb", "nb"],
-    ["nb", "ng", "ng", "ng", "rg", "ng", "ng", "ng", "sg", "ng", "ng", "ng", "ng", "fg", "ng", "ng", "nb", "ng", "ng", "nf", "nb"],
+    ["nb", "ng", "ng", "ng", "rg", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "fg", "ng", "ng", "nb", "ng", "ng", "nf", "nb"],
     ["nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb"]
 ];
   
@@ -23,7 +28,7 @@ const bodyLevel1 = [
     { x: 19*BLOCK_SIZE, y: 10*BLOCK_SIZE }
 ];
 
-export const level1 = {
+const level1 = {
     map: mapLevel1,
     snakeBodyPositions: bodyLevel1,
     direction: "left",
@@ -31,4 +36,6 @@ export const level1 = {
     speed: 300
 };
 
-// Level 2
+export const levels = {
+    1: level1
+}

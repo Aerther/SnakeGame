@@ -73,10 +73,10 @@ body {
     background-image: url("../sprites/finish.png");
 }
 
-.strawberry {
+.star {
     z-index: 1;
 
-    background-image: url("../sprites/strawberry.png");
+    background-color: yellow;
 }
 
 .teleport {

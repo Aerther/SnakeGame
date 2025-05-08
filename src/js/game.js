@@ -1,20 +1,20 @@
-import { snakeDirection, snakeHeadX, snakeHeadY, TOTAL_BLOCK_COUNT } from "./global";
-import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection } from "./rendering";
-import { powerUpsData, blocksData, positionsBodyParts } from "./states";
-import { tickGameLoop } from "./loop";
+import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection } from "./rendering.js";
+import { powerUpsData, blocksData, setPositionsBodyParts } from "./states.js";
+import { tickGameLoop } from "./loop.js";
+import { BLOCK_SIZE, snakeData } from "./global.js";
 
 // Loads the level into the game container
 export function loadLevel(stageMap, bodyPartsPositions, direction) {
-    positionsBodyParts = bodyPartsPositions;
+    setPositionsBodyParts(bodyPartsPositions);
 
-    snakeDirection = direction;
+    snakeData.snakeDirection = direction;
 
     // Sets the head x and y of the snake
-    snakeHeadX = positionsBodyParts[0].x;
-    snakeHeadY = positionsBodyParts[0].y;
+    snakeData.snakeHeadX = bodyPartsPositions[0].x;
+    snakeData.snakeHeadY = bodyPartsPositions[0].y;
 
-    rotateSnakeElementByDirection(positionsBodyParts[0], direction);
-    addSnakeBody(positionsBodyParts);
+    addSnakeBody(bodyPartsPositions);
+    rotateSnakeElementByDirection(getHeadElement(), direction);
 
     // Checks every individual block (see levels)
     for(let y=0; y < stageMap.length; y++) {
@@ -22,8 +22,10 @@ export function loadLevel(stageMap, bodyPartsPositions, direction) {
             let block = stageMap[y][x];
 
             let infoPowerUp = powerUpsData[block[0]];
+            Object.assign(infoPowerUp, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y})
 
             let infoBackground = blocksData[block[1]];
+            Object.assign(infoBackground, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y})
 
             if(infoPowerUp.type != null) {
                 infoPowerUp.list.push(infoPowerUp);
@@ -47,4 +49,9 @@ export function setSnakeSpeed(gameInterval, newSnakeSpeed) {
 
     clearInterval(gameInterval);
     return setInterval(tickGameLoop, newSnakeSpeed);
+};
+
+// Gets the head element
+export function getHeadElement() {
+    return document.getElementsByClassName("head")[0];
 };

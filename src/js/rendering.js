@@ -1,4 +1,4 @@
-import { gameContainer, BLOCK_SIZE, rotateSnakeElement } from "./global";
+import { gameContainer, BLOCK_SIZE, rotateSnakeElement } from "./global.js";
 
 // Rotates one element of the snake's body into that direction
 export function rotateSnakeElementByDirection(snakeElement, snakeDirection) {
