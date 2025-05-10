@@ -1,5 +1,5 @@
 import { BLOCK_SIZE, BLOCKS_WIDTH, BLOCKS_HEIGHT, gameContainer, snakeData } from "./global.js";
-import { setSnakeSpeed, loadLevel } from "./game.js";
+import { loadLevel, updatesGameSpeed } from "./game.js";
 import { levelNumber, levels } from "./levels.js";
 
 gameContainer.style.width = BLOCKS_WIDTH*BLOCK_SIZE + "px";
@@ -11,5 +11,5 @@ loadLevel(levels[levelNumber].map, levels[levelNumber].snakeBodyPositions, level
 let gameInterval;
 
 document.addEventListener("keydown", () => {
-    gameInterval = setSnakeSpeed(gameInterval, snakeData.snakeSpeed);
+    gameInterval = updatesGameSpeed(gameInterval, snakeData.snakeSpeed);
 }, {once: true});

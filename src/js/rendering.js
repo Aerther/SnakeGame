@@ -1,5 +1,10 @@
 import { gameContainer, BLOCK_SIZE, rotateSnakeElement } from "./global.js";
 
+// Gets the head element
+export function getHeadElement() {
+    return document.getElementsByClassName("head")[0];
+};
+
 // Rotates one element of the snake's body into that direction
 export function rotateSnakeElementByDirection(snakeElement, snakeDirection) {
     snakeElement.style.transform = `rotate(${rotateSnakeElement[snakeDirection]}deg)`;

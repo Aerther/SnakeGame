@@ -19,17 +19,22 @@ export const rotateSnakeElement = {
 let snakeSpeed = 300;
 
 // Initial snake head position
-let snakeHeadX = BLOCK_SIZE * 2;
+let snakeHeadX = 0;
 
-// Initial snake head position (centered)
-let snakeHeadY = Math.floor(gameContainer.offsetHeight / 2 / BLOCK_SIZE) * BLOCK_SIZE;
+// Initial snake head position
+let snakeHeadY = 0;
 
 // Initial snake direction
 let snakeDirection;
+
+// Player states
+let isPlayerInvincible = false;
 
 export const snakeData = {
     snakeHeadX: snakeHeadX,
     snakeHeadY: snakeHeadY,
     snakeSpeed: snakeSpeed,
-    snakeDirection: snakeDirection
+    snakeDirection: snakeDirection,
+    positionsBodyParts: [],
+    isPlayerInvincible: isPlayerInvincible,
 };

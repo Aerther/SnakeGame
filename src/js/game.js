@@ -1,11 +1,11 @@
-import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection } from "./rendering.js";
-import { powerUpsData, blocksData, setPositionsBodyParts } from "./states.js";
-import { tickGameLoop } from "./loop.js";
+import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection, getHeadElement } from "./rendering.js";
+import { powerUpsData, blocksData } from "./blocksData.js";
 import { BLOCK_SIZE, snakeData } from "./global.js";
+import { tickGameLoop } from "./loop.js";
 
 // Loads the level into the game container
 export function loadLevel(stageMap, bodyPartsPositions, direction) {
-    setPositionsBodyParts(bodyPartsPositions);
+    snakeData.positionsBodyParts = bodyPartsPositions;
 
     snakeData.snakeDirection = direction;
 
@@ -21,19 +21,21 @@ export function loadLevel(stageMap, bodyPartsPositions, direction) {
         for(let x=0; x < stageMap[y].length; x++) {
             let block = stageMap[y][x];
 
-            let infoPowerUp = powerUpsData[block[0]];
-            Object.assign(infoPowerUp, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y})
+            let infoPowerUp = {...powerUpsData[block[0]]};
+            Object.assign(infoPowerUp, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y});
+            delete infoPowerUp.list;
 
-            let infoBackground = blocksData[block[1]];
-            Object.assign(infoBackground, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y})
+            let infoBackground = {...blocksData[block[1]]};
+            Object.assign(infoBackground, {x: BLOCK_SIZE*x, y: BLOCK_SIZE*y});
+            delete infoBackground.list;
 
             if(infoPowerUp.type != null) {
-                infoPowerUp.list.push(infoPowerUp);
-                addBlockToGame(infoPowerUp)
+                powerUpsData[block[0]].list.push(infoPowerUp);
+                addBlockToGame(infoPowerUp);
             };
 
-            if(infoBackground.list != null) {
-                infoBackground.list.push(infoBackground);
+            if(infoBackground.type != "grass") {
+                blocksData[block[1]].list.push(infoBackground);
             };
 
             addBlockToGame(infoBackground);
@@ -41,17 +43,12 @@ export function loadLevel(stageMap, bodyPartsPositions, direction) {
     };
 };
 
-// Updates the snake's speed
-export function setSnakeSpeed(gameInterval, newSnakeSpeed) {
+// Updates the game's speed
+export function updatesGameSpeed(gameInterval, newGameSpeed) {
     Array.from(container.getElementsByClassName("body-part")).forEach((bodyPart) => {
-        bodyPart.style.transition = `top ${newSnakeSpeed}ms linear, left ${newSnakeSpeed}ms linear`;
+        bodyPart.style.transition = `top ${newGameSpeed}ms linear, left ${newGameSpeed}ms linear`;
     });
 
     clearInterval(gameInterval);
-    return setInterval(tickGameLoop, newSnakeSpeed);
-};
-
-// Gets the head element
-export function getHeadElement() {
-    return document.getElementsByClassName("head")[0];
+    return setInterval(tickGameLoop, newGameSpeed);
 };
