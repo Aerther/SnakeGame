@@ -33,7 +33,7 @@ const level1 = {
     snakeBodyPositions: bodyLevel1,
     direction: "left",
     name: "Level 1",
-    speed: 300
+    speed: 600
 };
 
 export const levels = {

@@ -7,6 +7,7 @@ gameContainer.style.height = BLOCKS_HEIGHT*BLOCK_SIZE + "px";
 gameContainer.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
 loadLevel(levels[levelNumber].map, levels[levelNumber].snakeBodyPositions, levels[levelNumber].direction);
+snakeData.snakeSpeed = levels[levelNumber].speed;
 
 export let gameInterval;
 

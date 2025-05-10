@@ -21,7 +21,7 @@ export function tickGameLoop() {
     for (let blockData of Object.values(blocksData.blocksData)) {
         let collisionObject = detectCollision(blockData.list, snakeData.snakeHeadX, snakeData.snakeHeadY);
     
-        if (collisionObject.collided && !snakeData.isPlayerInvincible) {
+        if (collisionObject.collided) {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
             break;
         };

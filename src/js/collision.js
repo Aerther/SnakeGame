@@ -14,10 +14,14 @@ export function detectCollision(elements, snakeHeadX, snakeHeadY) {
 };
 
 export function wallCollision(Object, index) {
+    if(snakeData.isPlayerInvincible) return;
+
     location.reload();
 };
 
 export function waterCollision(Object, index) {
+    if(snakeData.isPlayerInvincible) return;
+    
     location.reload();
 };
 
