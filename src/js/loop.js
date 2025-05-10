@@ -1,7 +1,7 @@
 import { rotateSnakeElementByDirection, getHeadElement } from "./rendering.js";
-import * as blocksData from "./blocksData.js";
 import { detectCollision } from "./collision.js";
 import { snakeData, BLOCK_SIZE } from "./global.js";
+import * as blocksData from "./blocksData.js";
 
 export function tickGameLoop() {
     if (snakeData.snakeDirection == "down") {
@@ -18,15 +18,23 @@ export function tickGameLoop() {
 
     // Checks for the collisions
 
-    Object.values(blocksData.blocksData).forEach((blockData, index) => {
+    for (let blockData of Object.values(blocksData.blocksData)) {
         let collisionObject = detectCollision(blockData.list, snakeData.snakeHeadX, snakeData.snakeHeadY);
-
-        
-        if(collisionObject.collided) {
-            collisionObject.object.collisionFunction();
+    
+        if (collisionObject.collided && !snakeData.isPlayerInvincible) {
+            collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
+            break;
         };
+    };
 
-    });
+    for (let blockData of Object.values(blocksData.powerUpsData)) {
+        let collisionObject = detectCollision(blockData.list, snakeData.snakeHeadX, snakeData.snakeHeadY);
+    
+        if (collisionObject.collided) {
+            collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
+            break;
+        };
+    };
 
     snakeData.positionsBodyParts.unshift({ x: snakeData.snakeHeadX, y: snakeData.snakeHeadY });
     

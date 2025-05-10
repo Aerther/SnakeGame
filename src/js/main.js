@@ -8,8 +8,12 @@ gameContainer.style.backgroundSize = `${BLOCK_SIZE}px ${BLOCK_SIZE}px`;
 
 loadLevel(levels[levelNumber].map, levels[levelNumber].snakeBodyPositions, levels[levelNumber].direction);
 
-let gameInterval;
+export let gameInterval;
 
 document.addEventListener("keydown", () => {
     gameInterval = updatesGameSpeed(gameInterval, snakeData.snakeSpeed);
 }, {once: true});
+
+export function setGameInterval(intervalGame) {
+    gameInterval = intervalGame;
+};

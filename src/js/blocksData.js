@@ -80,5 +80,5 @@ export const powerUpsData = {
     s: dataStar,
     f: dataAddSpeed,
     r: dataReduceSpeed,
-    n: {type: null, list: null}
+    n: {type: null, list: []}
 };

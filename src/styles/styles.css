@@ -76,7 +76,7 @@ body {
 .star {
     z-index: 1;
 
-    background-color: yellow;
+    background-image: url("../sprites/star.png");
 }
 
 .teleport {

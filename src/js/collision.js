@@ -1,5 +1,6 @@
 import { updatesGameSpeed } from "./game.js";
 import { snakeData } from "./global.js";
+import { gameInterval, setGameInterval} from "./main.js";
 
 // Checks for a collision and return a json
 export function detectCollision(elements, snakeHeadX, snakeHeadY) {
@@ -12,35 +13,36 @@ export function detectCollision(elements, snakeHeadX, snakeHeadY) {
     return { collided: false, object: null, index: -1 };
 };
 
-export function wallCollision() {
+export function wallCollision(Object, index) {
     location.reload();
 };
 
-export function waterCollision() {
+export function waterCollision(Object, index) {
     location.reload();
 };
 
-export function sandCollision() {
-    updatesGameSpeed(snakeData.snakeSpeed * 3);
+export function sandCollision(Object, index) {
+    setGameInterval(updatesGameSpeed(gameInterval, snakeData.snakeSpeed * 2));
 };
 
-export function starCollision() {
+export function starCollision(Object, index) {
     snakeData.isPlayerInvincible = true;
-    setTimeout(() => {snakeData.isPlayerInvincible = false}, 3000);
+    setTimeout(() => {snakeData.isPlayerInvincible = false;}, 3000);
 };
 
-export function finishCollision() {
+export function finishCollision(Object, index) {
     alert("You won");
 };
 
-export function speedBoostCollision() {
-
+export function speedBoostCollision(Object, index) {
+    snakeData.snakeSpeed = Object.effect(snakeData.snakeSpeed);
+    setGameInterval(updatesGameSpeed(gameInterval, snakeData.snakeSpeed));
 };
 
-export function teleportCollision() {
-
+export function teleportCollision(Object, index) {
+    
 };
 
-export function appleCollision() {
+export function appleCollision(Object, index) {
     
 };
