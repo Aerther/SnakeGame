@@ -18,7 +18,7 @@ const mapLevel1 = [
     ["nb", "ng", "nb", "ng", "nb", "ng", "nb", "ng", "nb", "nb", "nb", "ng", "nb", "nb", "nb", "ng", "nb", "nb", "nb", "ng", "nb"],
     ["nb", "ng", "ng", "ng", "nb", "ng", "ng", "ng", "nb", "ng", "ng", "ng", "ng", "ng", "nb", "ng", "nb", "ng", "ng", "ng", "nb"],
     ["nb", "ng", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "ng", "nb", "ng", "nb", "nb", "nb"],
-    ["nb", "ng", "ng", "ng", "rg", "ng", "ng", "sg", "ng", "ng", "ng", "ng", "ng", "fg", "ng", "ng", "nb", "ng", "ng", "nf", "nb"],
+    ["nb", "ng", "ng", "ng", "rg", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "fg", "ng", "ng", "nb", "ng", "ng", "nf", "nb"],
     ["nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb"]
 ];
   
@@ -33,7 +33,7 @@ const level1 = {
     snakeBodyPositions: bodyLevel1,
     direction: "left",
     name: "Level 1",
-    speed: 600
+    speed: 300
 };
 
 export const levels = {

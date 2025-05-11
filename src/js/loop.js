@@ -1,6 +1,8 @@
 import { rotateSnakeElementByDirection, getHeadElement } from "./rendering.js";
 import { detectCollision } from "./collision.js";
 import { snakeData, BLOCK_SIZE } from "./global.js";
+import { updatesGameSpeed } from "./game.js";
+import { gameInterval, setGameInterval } from "./main.js";
 import * as blocksData from "./blocksData.js";
 
 export function tickGameLoop() {
@@ -15,6 +17,7 @@ export function tickGameLoop() {
     };
 
     rotateSnakeElementByDirection(getHeadElement(), snakeData.snakeDirection);
+    setGameInterval(updatesGameSpeed(gameInterval, snakeData.snakeSpeed));
 
     // Checks for the collisions
 
