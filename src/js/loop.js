@@ -26,13 +26,16 @@ export function tickGameLoop() {
     
         if (collisionObject.collided) {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
+
+            // If the player has collided with a finish block so it will stop this function going forward
+            if(collisionObject.object.type === "finish") return;
             break;
         };
     };
 
     for (let blockData of Object.values(blocksData.powerUpsData)) {
         let collisionObject = detectCollision(blockData.list, snakeData.snakeHeadX, snakeData.snakeHeadY);
-    
+
         if (collisionObject.collided) {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
             break;
@@ -49,7 +52,7 @@ export function tickGameLoop() {
     snakeData.positionsBodyParts.forEach((bodyPart, index) => {
         if (snakeData.snakeHeadX === bodyPart.x && snakeData.snakeHeadY === bodyPart.y && index !== 0) {
             alert("Game Over! The snake collided with itself.");
-            //location.reload();
+            location.reload();
         };
 
         bodyPartsElements[index].style.top = bodyPart.y + "px";

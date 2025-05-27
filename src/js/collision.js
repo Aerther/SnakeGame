@@ -9,6 +9,7 @@ import { levels } from "./levels.js";
 export function detectCollision(elements, snakeHeadX, snakeHeadY) {
     for (let i = 0; i < elements.length; i++) {
         if (elements[i].x == snakeHeadX && elements[i].y == snakeHeadY) {
+            console.log(elements.length)
             return { collided: true, object: elements[i], index: i };
         }
     };
@@ -59,5 +60,8 @@ export function teleportCollision(ObjectParam, index) {
 };
 
 export function appleCollision(ObjectParam, index) {
-    
+    console.log(ObjectParam)
+    removeFromList(blocksData.powerUpsData, ObjectParam);
+
+    removeBlock(ObjectParam);
 };
