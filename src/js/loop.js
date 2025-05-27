@@ -47,9 +47,9 @@ export function tickGameLoop() {
 
     let bodyPartsElements = Array.from(container.getElementsByClassName("body-part"));
     snakeData.positionsBodyParts.forEach((bodyPart, index) => {
-        if (snakeData.snakeHeadX == bodyPart.x && snakeData.snakeHeadY == bodyPart.y && index != 0) {
-            //alert("Game Over! The snake collided with itself.");
-            location.reload();
+        if (snakeData.snakeHeadX === bodyPart.x && snakeData.snakeHeadY === bodyPart.y && index !== 0) {
+            alert("Game Over! The snake collided with itself.");
+            //location.reload();
         };
 
         bodyPartsElements[index].style.top = bodyPart.y + "px";

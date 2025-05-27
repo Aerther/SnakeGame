@@ -24,6 +24,9 @@ export function createBlock(infoBlock) {
     b.classList.add("block");
     b.classList.add(infoBlock.type);
 
+    b.setAttribute('data-x', infoBlock.x);
+    b.setAttribute('data-y', infoBlock.y);
+
     b.style.width = BLOCK_SIZE + "px";
     b.style.left = infoBlock.x + "px";
     b.style.top = infoBlock.y + "px";
@@ -44,4 +47,10 @@ export function addSnakeBody(positionsBodyParts) {
 
         gameContainer.appendChild(b);
     });
+};
+
+export function removeBlock(infoBlock) {
+    let blockToDelete = document.querySelector(`.${infoBlock.type}[data-x="${infoBlock.x}"][data-y="${infoBlock.y}"]`);
+
+    blockToDelete.remove();
 };
