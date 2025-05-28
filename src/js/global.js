@@ -36,5 +36,6 @@ export const snakeData = {
     snakeSpeed: snakeSpeed,
     snakeDirection: snakeDirection,
     positionsBodyParts: [],
+    isLevelLoading: true,
     isPlayerInvincible: isPlayerInvincible,
 };

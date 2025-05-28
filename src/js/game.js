@@ -2,9 +2,10 @@ import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection, getHeadEle
 import { powerUpsData, blocksData } from "./blocksData.js";
 import { BLOCK_SIZE, gameContainer, snakeData } from "./global.js";
 import { tickGameLoop } from "./loop.js";
+import { gameInterval, setGameInterval } from "./main.js";
 
 // Loads the level into the game container
-export function loadLevel(stageMap, bodyPartsPositions, direction) {
+export function loadLevel(stageMap, bodyPartsPositions, direction, snakeSpeed) {
     // Resets
     resetSnakeBody();
     resetBlockLists(powerUpsData);
@@ -13,6 +14,8 @@ export function loadLevel(stageMap, bodyPartsPositions, direction) {
     gameContainer.textContent = "";
 
     snakeData.positionsBodyParts = bodyPartsPositions;
+    
+    snakeData.snakeSpeed = snakeSpeed;
 
     snakeData.snakeDirection = direction;
 
@@ -59,6 +62,9 @@ export function updatesGameSpeed(gameInterval, newGameSpeed) {
 
     // Reset the game's speed and return a new one
     clearInterval(gameInterval);
+
+    if(newGameSpeed == -1) return 0;
+
     return setInterval(tickGameLoop, newGameSpeed);
 };
 
@@ -66,7 +72,7 @@ export function updatesGameSpeed(gameInterval, newGameSpeed) {
 export function removeFromList(blockData, ObjectParam) {
     for (let blockInfo of Object.values(blockData)) {
         if(blockInfo.type == ObjectParam.type) {
-            blockInfo.list = blockInfo.list.filter(blockInfoObject => blockInfoObject.x !== ObjectParam.x && blockInfoObject.y !== ObjectParam.y);
+            blockInfo.list = blockInfo.list.filter(blockInfoObject => blockInfoObject.x != ObjectParam.x || blockInfoObject.y != ObjectParam.y);
         };
     };
 };

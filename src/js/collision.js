@@ -1,7 +1,7 @@
 import { loadLevel, removeFromList, updatesGameSpeed } from "./game.js";
 import { snakeData } from "./global.js";
 import { gameInterval, setGameInterval} from "./main.js";
-import { removeBlock } from "./rendering.js";
+import { addSnakeBody, removeBlock } from "./rendering.js";
 import * as blocksData from "./blocksData.js";
 import { levels } from "./levels.js";
 
@@ -9,7 +9,6 @@ import { levels } from "./levels.js";
 export function detectCollision(elements, snakeHeadX, snakeHeadY) {
     for (let i = 0; i < elements.length; i++) {
         if (elements[i].x == snakeHeadX && elements[i].y == snakeHeadY) {
-            console.log(elements.length)
             return { collided: true, object: elements[i], index: i };
         }
     };
@@ -39,11 +38,24 @@ export function starCollision(ObjectParam, index) {
 };
 
 export function finishCollision(ObjectParam, index) {
-    setGameInterval(0);
+    // Makes the game interval stop
+    setGameInterval(updatesGameSpeed(gameInterval, -1));
+    snakeData.isLevelLoading = true;
+
+    // Gets the data for the next level
     let levelNumber = levels[0];
     let nextLevel = levels[levelNumber];
-    
-    loadLevel(nextLevel.map, nextLevel.snakeBodyPositions, nextLevel.direction);
+
+    // If there is no more levels to be loaded it will load a congratulations page
+    if(Object.values(levels).length == levelNumber) {
+        return
+    };
+
+    // Load the next level
+    loadLevel(nextLevel.map, nextLevel.snakeBodyPositions, nextLevel.direction, nextLevel.speed);
+
+    // Updates the level number
+    levels[0] = levelNumber + 1;
 };
 
 export function speedBoostCollision(ObjectParam, index) {
@@ -60,8 +72,11 @@ export function teleportCollision(ObjectParam, index) {
 };
 
 export function appleCollision(ObjectParam, index) {
-    console.log(ObjectParam)
     removeFromList(blocksData.powerUpsData, ObjectParam);
-
     removeBlock(ObjectParam);
+
+    let snakeBodyObject = { x: ObjectParam.x, y: ObjectParam.y };
+
+    snakeData.positionsBodyParts.push(snakeBodyObject);
+    addSnakeBody([snakeBodyObject]);
 };

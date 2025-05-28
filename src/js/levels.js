@@ -1,8 +1,5 @@
 import { BLOCK_SIZE } from "./global.js";
 
-// Used to know which level we are
-let levelNumber = 1;
-
 // Level 1
 const mapLevel1 = [
     ["nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb"],
@@ -36,6 +33,8 @@ const level1 = {
     speed: 300
 };
 
+// Level 2
+
 const mapLevel2 = [
     ["nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb", "nb"],
     ["nb", "ns", "ns", "ns", "nb", "ng", "ng", "ng", "ng", "ng", "nb", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "ng", "nb"],
@@ -63,10 +62,13 @@ const bodyLevel2 = [
 const level2 = {
     map: mapLevel2,
     snakeBodyPositions: bodyLevel2,
-    direction: "left",
+    direction: "down",
     name: "Level 2",
     speed: 300
 };
+
+// Used to know which level we are
+let levelNumber = 1;
 
 export const levels = {
     0: levelNumber,
