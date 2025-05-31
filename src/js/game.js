@@ -2,7 +2,7 @@ import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection, getHeadEle
 import { powerUpsData, blocksData } from "./blocksData.js";
 import { BLOCK_SIZE, gameContainer, snakeData } from "./global.js";
 import { tickGameLoop } from "./loop.js";
-import { gameInterval, setGameInterval } from "./main.js";
+import { levels } from "./levels.js";
 
 // Loads the level into the game container
 export function loadLevel(stageMap, bodyPartsPositions, direction, snakeSpeed) {
@@ -13,7 +13,7 @@ export function loadLevel(stageMap, bodyPartsPositions, direction, snakeSpeed) {
 
     gameContainer.textContent = "";
 
-    snakeData.positionsBodyParts = bodyPartsPositions;
+    snakeData.positionsBodyParts = Object.values(Object.assign({}, bodyPartsPositions));
     
     snakeData.snakeSpeed = snakeSpeed;
 
@@ -51,6 +51,11 @@ export function loadLevel(stageMap, bodyPartsPositions, direction, snakeSpeed) {
             addBlockToGame(infoBackground);
         };
     };
+};
+
+export function gameOver() {
+    loadLevel(levels[1].map, levels[1].snakeBodyPositions, levels[1].direction, levels[1].speed);
+    levels[0] = 2;
 };
 
 // Updates the game's speed

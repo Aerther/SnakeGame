@@ -74,4 +74,4 @@ export const levels = {
     0: levelNumber,
     1: level1,
     2: level2
-}
+};

@@ -28,7 +28,7 @@ export function tickGameLoop() {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
 
             // If the player has collided with a finish block so it will stop this function going forward
-            if(collisionObject.object.type === "finish") return;
+            if(collisionObject.object.type === "finish" || collisionObject.object.type === "wall") return;
             break;
         };
     };

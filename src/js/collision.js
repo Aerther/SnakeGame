@@ -1,4 +1,4 @@
-import { loadLevel, removeFromList, updatesGameSpeed } from "./game.js";
+import { gameOver, loadLevel, removeFromList, updatesGameSpeed } from "./game.js";
 import { snakeData } from "./global.js";
 import { gameInterval, setGameInterval} from "./main.js";
 import { addSnakeBody, removeBlock } from "./rendering.js";
@@ -19,13 +19,19 @@ export function detectCollision(elements, snakeHeadX, snakeHeadY) {
 export function wallCollision(ObjectParam, index) {
     if(snakeData.isPlayerInvincible) return;
 
-    location.reload();
+    setGameInterval(updatesGameSpeed(gameInterval, -1));
+    snakeData.isLevelLoading = true;
+
+    gameOver();
 };
 
 export function waterCollision(ObjectParam, index) {
     if(snakeData.isPlayerInvincible) return;
+
+    setGameInterval(updatesGameSpeed(gameInterval, -1));
+    snakeData.isLevelLoading = true;
     
-    location.reload();
+    gameOver();
 };
 
 export function sandCollision(ObjectParam, index) {
