@@ -1,7 +1,7 @@
 import { gameOver, loadLevel, removeFromList, updatesGameSpeed } from "./game.js";
 import { snakeData } from "./global.js";
 import { gameInterval, setGameInterval} from "./main.js";
-import { addSnakeBody, removeBlock } from "./rendering.js";
+import { addSnakeBody, removeBlock, updateGameInfo } from "./rendering.js";
 import * as blocksData from "./blocksData.js";
 import { levels } from "./levels.js";
 
@@ -49,7 +49,7 @@ export function finishCollision(ObjectParam, index) {
     snakeData.isLevelLoading = true;
 
     // Gets the data for the next level
-    let levelNumber = levels[0];
+    let levelNumber = levels[0] + 1;
     let nextLevel = levels[levelNumber];
 
     // If there is no more levels to be loaded it will load a congratulations page
@@ -61,7 +61,7 @@ export function finishCollision(ObjectParam, index) {
     loadLevel(nextLevel.map, nextLevel.snakeBodyPositions, nextLevel.direction, nextLevel.speed);
 
     // Updates the level number
-    levels[0] = levelNumber + 1;
+    levels[0] = levelNumber;
 };
 
 export function speedBoostCollision(ObjectParam, index) {

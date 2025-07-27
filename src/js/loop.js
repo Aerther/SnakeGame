@@ -1,9 +1,10 @@
-import { rotateSnakeElementByDirection, getHeadElement } from "./rendering.js";
+import { rotateSnakeElementByDirection, getHeadElement, updateGameInfo } from "./rendering.js";
 import { detectCollision } from "./collision.js";
 import { snakeData, BLOCK_SIZE } from "./global.js";
 import { updatesGameSpeed } from "./game.js";
 import { gameInterval, setGameInterval } from "./main.js";
 import * as blocksData from "./blocksData.js";
+import { levels } from "./levels.js";
 
 export function tickGameLoop() {
     if (snakeData.snakeDirection == "down") {
@@ -26,6 +27,7 @@ export function tickGameLoop() {
     
         if (collisionObject.collided) {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
+            updateGameInfo(snakeData.positionsBodyParts.length, levels[0], levels[1].speed/snakeData.snakeSpeed);
 
             // If the player has collided with a finish block so it will stop this function going forward
             if(collisionObject.object.type === "finish" || collisionObject.object.type === "wall") return;
@@ -38,6 +40,8 @@ export function tickGameLoop() {
 
         if (collisionObject.collided) {
             collisionObject.object.collisionFunction(collisionObject.object, collisionObject.index);
+            updateGameInfo(snakeData.positionsBodyParts.length, levels[0], levels[1].speed/snakeData.snakeSpeed);
+
             break;
         };
     };

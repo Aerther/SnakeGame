@@ -54,3 +54,11 @@ export function removeBlock(infoBlock) {
 
     blockToDelete.remove();
 };
+
+export function updateGameInfo(snakeSize, gameLevel, snakeVelocity) {
+    let size = document.getElementById("size");
+    let level = document.getElementById("level");
+
+    size.textContent = "Size: " + snakeSize;
+    level.textContent = "Level: " + gameLevel;
+}

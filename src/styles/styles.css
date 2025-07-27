@@ -1,17 +1,64 @@
+/* Reset CSS */
+
 * {
     padding: 0;
     margin: 0;
     box-sizing: border-box;
+    
+    color: #06402b;
 }
 
 body {
     height: 100vh;
     width: 100vw;
 
-    display: flex;
-    justify-content: center;
-    align-items: center;
+    background-image: url('../images/forestbackground.jpg'); /* make sure it's subtle */
+    background-size: 100% 100%;
+    background-position: center;
+
+    backdrop-filter: blur(3px) brightness(0.7);
+
+    display: grid;
+    grid-template-columns: 40% 60%;
 }
+
+/* Main HTML Styles */
+
+.column2, .column1 {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+}
+
+#game-info {
+    height: 80%;
+    width: 80%;
+
+    position: relative;
+
+    background-color: #2e6f40;
+
+    border-radius: 20px;
+}
+
+#game-info::before {
+    content: "";
+
+    position: absolute;
+
+    width: calc(100% + 10px);
+    height: calc(100% + 10px);
+
+    background-color: #06402b;
+
+    transform: translate(-5px, -5px);
+
+    border-radius: 25px;
+
+    z-index: -1;
+}
+
+/* Game Container Styles*/
 
 #container {
     height: 600px;
@@ -26,11 +73,20 @@ body {
     aspect-ratio: 1/1;
     position: absolute;
 
-    background-color: red;
+    background-color: crimson;
+
+    border: 0.5px solid rgba(0, 0, 0, 0.3);
+
     z-index: 3;
+
+    filter: brightness(0.8);
 }
 
 .head {
+    background-image: url("../images/face.png");
+    background-position: center;
+    background-size: 100% 100%;
+
     border-top-right-radius: 20px;
     border-top-left-radius: 20px;
 }
@@ -47,36 +103,37 @@ body {
     
     z-index: 2;
 
-    animation: rotate 2s linear infinite;
+    filter: saturate(3) brightness(0.7);
+
+    animation: rotateApple360 2s linear infinite;
 }
 
 .sand {
-    z-index: 0;
-
     background-image: url("../sprites/sand.png");
+
+    z-index: 0;
     
-    filter: saturate(0.9);
+    filter: saturate(1.6) brightness(0.6);
 }
 
 .water {
-    background-color: blue;
-    z-index: 0;
-
     background-image: url("../sprites/water.png");
+
+    z-index: 0;
 
     filter: saturate(0.6);
 }
 
 .finish {
-    z-index: 0;
-
     background-image: url("../sprites/finish.png");
+
+    z-index: 0;
 }
 
 .star {
-    z-index: 1;
-
     background-image: url("../sprites/star.png");
+
+    z-index: 1;
 }
 
 .teleport {
@@ -86,38 +143,50 @@ body {
 }
 
 .grass {
-    z-index: 0;
-
-    filter: hue-rotate(0deg) saturate(0.7);
+    background-image: url("../sprites/grass.png");
 
     border: 1px solid green;
-    background-image: url("../sprites/grass.png");
+
+    z-index: 0;
+
+    filter: hue-rotate(0deg) saturate(1.2) brightness(0.5);
 }
 
 .wall {
-    background-image: url("../sprites/wall.png");
+    background-image: url("../sprites/brick.avif");
+
     z-index: 0;
+
+    filter: saturate(1.5) brightness(0.55);
 }
 
 .add-speed {
     background-image: url("../sprites/speed.png");
 
-    transform: rotate(-90deg);
-    filter: hue-rotate(90deg) saturate(5);
-
     z-index: 1;
+
+    transform: rotate(-90deg);
+    filter: hue-rotate(90deg) saturate(5) brightness(0.6);
 }
 
 .reduce-speed {
     background-image: url("../sprites/speed.png");
 
-    transform: rotate(90deg);
-    filter: hue-rotate(0deg) saturate(5);
-
     z-index: 1;
+
+    transform: rotate(90deg);
+    filter: hue-rotate(0deg) saturate(5) brightness(0.6);
 }
 
-@keyframes rotate {
+.add-speed, .reduce-speed {
+    background-size: 80% 80%;
+    background-repeat: no-repeat;
+    background-position: center;
+}
+
+/* Game Container Animations */
+
+@keyframes rotateApple360 {
     from {
         transform: rotate(0deg);
     } to {

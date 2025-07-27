@@ -1,4 +1,4 @@
-import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection, getHeadElement } from "./rendering.js";
+import { addBlockToGame, addSnakeBody, rotateSnakeElementByDirection, getHeadElement, updateGameInfo } from "./rendering.js";
 import { powerUpsData, blocksData } from "./blocksData.js";
 import { BLOCK_SIZE, gameContainer, snakeData } from "./global.js";
 import { tickGameLoop } from "./loop.js";
@@ -55,7 +55,11 @@ export function loadLevel(stageMap, bodyPartsPositions, direction, snakeSpeed) {
 
 export function gameOver() {
     loadLevel(levels[1].map, levels[1].snakeBodyPositions, levels[1].direction, levels[1].speed);
-    levels[0] = 2;
+    levels[0] = 1;
+};
+
+export function gameWinner() {
+    
 };
 
 // Updates the game's speed
